@@ -10,7 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -29,14 +28,9 @@ public class UserControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        // ViewResolver needed to avoid circular dispatch warning
-        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/foo");
-
         server = MockMvcBuilders
                 .standaloneSetup(new UserController(userRepository))
                 .setControllerAdvice(new RestAdvice())
-//                .setViewResolvers(viewResolver)
                 .build();
     }
 
