@@ -1,10 +1,6 @@
-package com.pimp.commons;
-
-import java.util.List;
-import java.util.stream.Collectors;
+package com.pimp.commons.mongo;
 
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 

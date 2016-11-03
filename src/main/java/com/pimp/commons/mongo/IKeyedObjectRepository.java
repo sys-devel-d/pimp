@@ -1,6 +1,4 @@
-package com.pimp.commons;
-
-import java.util.List;
+package com.pimp.commons.mongo;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

@@ -1,6 +1,6 @@
 package com.pimp.commons.exceptions;
 
-import com.pimp.commons.IKeyedObject;
+import com.pimp.commons.mongo.IKeyedObject;
 
 /**
  * @author Kevin Goy

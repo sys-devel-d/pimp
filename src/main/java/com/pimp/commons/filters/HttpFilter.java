@@ -1,4 +1,4 @@
-package com.pimp.commons;
+package com.pimp.commons.filters;
 
 import java.io.IOException;
 

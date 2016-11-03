@@ -1,4 +1,4 @@
-package com.pimp.commons;
+package com.pimp.commons.mongo;
 
 import java.net.IDN;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.pimp.commons.mongo.*;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 

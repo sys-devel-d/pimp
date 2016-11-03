@@ -1,10 +1,11 @@
-package com.pimp.commons;
+package com.pimp.commons.filters;
+
+import com.pimp.commons.filters.HttpFilter;
+import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,9 +30,4 @@ public class SimpleCorsFilter extends HttpFilter {
     chain.doFilter(request, response);
   }
 
-  public void init(FilterConfig filterConfig) {
-  }
-
-  public void destroy() {
-  }
 }

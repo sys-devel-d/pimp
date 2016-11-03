@@ -1,5 +1,6 @@
-package com.pimp.commons;
+package com.pimp.controller;
 
+import com.pimp.commons.mongo.JSONError;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
