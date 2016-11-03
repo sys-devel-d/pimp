@@ -1,9 +1,6 @@
 package com.pimp.config;
 
-import com.google.common.collect.Lists;
-import com.pimp.commons.filters.SimpleCorsFilter;
 import com.pimp.commons.mongo.MongoFileStorage;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDbFactory;
