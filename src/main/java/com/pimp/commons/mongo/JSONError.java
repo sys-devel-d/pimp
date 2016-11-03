@@ -93,6 +93,14 @@ public class JSONError {
     return create(HttpStatus.NOT_IMPLEMENTED, message);
   }
 
+  public static JSONError unprocessableEntity() {
+    return unprocessableEntity((String) null);
+  }
+
+  public static JSONError unprocessableEntity(String message) {
+    return create(HttpStatus.UNPROCESSABLE_ENTITY, message);
+  }
+
   public static JSONError notImplemented() {
     return notImplemented((String) null);
   }
