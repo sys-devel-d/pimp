@@ -2,7 +2,12 @@
 
 ## Initial Setup
 - Install Maven.
+- Install MongoDB.
 - Clone repo.
+
+## Prestart
+- Run mongo instance.
+- ```mongod```
 
 ## Run without tests in one step
 - Go to project directory.
