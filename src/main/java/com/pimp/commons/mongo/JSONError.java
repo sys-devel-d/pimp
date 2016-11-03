@@ -1,28 +1,47 @@
 package com.pimp.commons.mongo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.List;
 
 /**
  * @author Kevin Goy
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class JSONError {
 
   private final int statusCode;
   private final String error;
   private final String message;
+  private final List<FieldError> fieldErrors;
 
   private JSONError(int statusCode, String error, String message) {
     this.statusCode = statusCode;
     this.error = error;
     this.message = message;
+    fieldErrors = null;
   }
 
   private JSONError(HttpStatus httpStatus, String message) {
     this(httpStatus.value(), httpStatus.getReasonPhrase(), message);
   }
 
+  public JSONError(int statusCode, String error, String message, List<FieldError> fieldErrors) {
+    this.statusCode = statusCode;
+    this.error = error;
+    this.message = message;
+    this.fieldErrors = fieldErrors;
+  }
+
   public static JSONError create(HttpStatus httpStatus, String message) {
     return new JSONError(httpStatus, message);
+  }
+
+  public static JSONError create(HttpStatus httpStatus, String message, List<FieldError> fieldErrors) {
+    return new JSONError(httpStatus.value(), httpStatus.getReasonPhrase(), message, fieldErrors);
   }
 
   public static JSONError badRequest(String message) {
@@ -101,6 +120,10 @@ public class JSONError {
     return create(HttpStatus.UNPROCESSABLE_ENTITY, message);
   }
 
+  public static JSONError unprocessableEntity(String message,BindingResult bindingResult) {
+    return create(HttpStatus.UNPROCESSABLE_ENTITY, message, bindingResult.getFieldErrors());
+  }
+
   public static JSONError notImplemented() {
     return notImplemented((String) null);
   }
@@ -115,6 +138,10 @@ public class JSONError {
 
   public String getMessage() {
     return this.message;
+  }
+
+  public List<FieldError> getFieldErrors() {
+    return fieldErrors;
   }
 
   public String toString() {
