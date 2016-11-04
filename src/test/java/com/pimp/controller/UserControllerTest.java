@@ -1,7 +1,8 @@
 package com.pimp.controller;
 
+import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.User;
-import com.pimp.repositories.UserRepository;
+import com.pimp.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,19 +25,19 @@ public class UserControllerTest {
     private MockMvc server;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Before
     public void setUp() throws Exception {
         server = MockMvcBuilders
-                .standaloneSetup(new UserController(userRepository))
+                .standaloneSetup(new UserController(userService))
                 .setControllerAdvice(new RestAdvice())
                 .build();
     }
 
     @Test
     public void testGetUser() throws Exception {
-        when(userRepository.findByUserName(any()))
+        when(userService.findByUserName(any()))
                 .thenReturn(new User().setEmail("foo@bar.org"));
 
         server.perform(get("/users/foo"))
@@ -46,7 +47,7 @@ public class UserControllerTest {
 
     @Test
     public void testPasswordIsOmitted() throws Exception {
-        when(userRepository.findByUserName(any()))
+        when(userService.findByUserName(any()))
                 .thenReturn(new User().setEmail("foo@bar.org").setPassword("secret"));
 
         server.perform(get("/users/foo"))
@@ -61,8 +62,8 @@ public class UserControllerTest {
 
     @Test
     public void testNotExistingUser() throws Exception {
-        when(userRepository.findByUserName(any()))
-                .thenReturn(null);
+        when(userService.findByUserName(any()))
+                .thenThrow(new EntityNotFoundException());
 
         server.perform(get("/users/foo"))
                 .andExpect(status().isNotFound());
