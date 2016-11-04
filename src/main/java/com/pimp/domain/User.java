@@ -25,7 +25,6 @@ public class User {
     @Size(min = 8, max = 255)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<String> roles;
 
     public String getEmail() {
