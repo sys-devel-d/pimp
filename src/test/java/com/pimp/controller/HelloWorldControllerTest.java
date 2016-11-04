@@ -20,6 +20,6 @@ public class HelloWorldControllerTest {
 
     @Test
     public void testSayHello() throws Exception {
-        server.perform(get("/hello")).andExpect(status().isOk()).andExpect(content().string("{\"message\":\"Hello, world.\"}"));
+        server.perform(get("/hello")).andExpect(status().isOk()).andExpect(content().string("{\"message\":\"Hello, world.\",\"key\":null}"));
     }
 }
