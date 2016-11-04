@@ -76,6 +76,17 @@ public class User {
         return roles;
     }
 
+
+    public User addRoles(List<String> roles) {
+        this.roles.addAll(roles);
+        return this;
+    }
+
+    public User addRole(String role) {
+        this.roles.add(role);
+        return this;
+    }
+
     public User setRoles(List<String> roles) {
         this.roles = roles;
         return this;
