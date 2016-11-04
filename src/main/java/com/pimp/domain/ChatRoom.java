@@ -9,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pimp.commons.mongo.IKeyedObject;
+import com.pimp.model.chat.Message;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoom implements IKeyedObject {
