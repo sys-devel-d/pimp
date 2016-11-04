@@ -1,5 +1,7 @@
-package com.pimp.commons.mongo;
+package com.pimp.repositories;
 
+import com.pimp.commons.mongo.IKeyedObject;
+import com.pimp.commons.mongo.IKeyedObjectRepository;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
