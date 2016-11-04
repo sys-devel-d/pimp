@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User {
@@ -24,6 +25,8 @@ public class User {
     @Size(min = 8, max = 255)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<String> roles;
 
     public String getEmail() {
         return email;
@@ -67,6 +70,15 @@ public class User {
 
     public User setPassword(String password) {
         this.password = password;
+        return this;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public User setRoles(List<String> roles) {
+        this.roles = roles;
         return this;
     }
 }
