@@ -84,14 +84,13 @@ public class RestAdvice {
     return JSONError.forbidden();
   }
 
-//  @ExceptionHandler({EntityValidationException.class})
-//  @ResponseStatus(HttpStatus.BAD_REQUEST)
-//  @ResponseBody
-//  public JSONError entityValidation(EntityValidationException e) {
-//    log.warn(e.getMessage(), e);
-//    return JSONError.badRequest();
-//  }
-
+  @ExceptionHandler({EntityValidationException.class})
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ResponseBody
+  public JSONError entityValidation(EntityValidationException e) {
+    log.warn(e.getMessage(), e);
+    return JSONError.badRequest();
+  }
 
   @ExceptionHandler({DeleteEntityException.class})
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -117,4 +116,11 @@ public class RestAdvice {
     return JSONError.unprocessableEntity("Validation Error", e.getBindingResult());
   }
 
+  @ExceptionHandler({EntityAlreadyExistsException.class})
+  @ResponseStatus(HttpStatus.CONFLICT)
+  @ResponseBody
+  protected JSONError methodArgumentNotValidException(EntityAlreadyExistsException e) throws JsonProcessingException {
+    log.warn(e.getMessage());
+    return JSONError.conflict(e.getMessage());
+  }
 }
