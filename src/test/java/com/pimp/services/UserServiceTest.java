@@ -1,5 +1,6 @@
 package com.pimp.services;
 
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.User;
 import com.pimp.domain.UserDocument;
@@ -53,8 +54,16 @@ public class UserServiceTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void testFindNotExistingUser() throws Exception {
-        when(userService.findByUserName(any())).thenReturn(null);
+        when(userRepository.findByUserName(any())).thenReturn(null);
 
         userService.findByUserName("foo");
+    }
+
+    @Test(expected = EntityAlreadyExistsException.class)
+    public void testCreateAlreadyExistingUser() throws Exception {
+        when(userRepository.findByUserName(any())).thenReturn(new UserDocument());
+
+        User user = new User().setEmail("foo");
+        userService.createUser(user);
     }
 }

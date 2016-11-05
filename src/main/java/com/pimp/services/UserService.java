@@ -29,11 +29,8 @@ public class UserService {
             throw new EntityAlreadyExistsException("User already exists: " + userName);
         }
 
-        UserDocument userDocument = new UserDocument()
-                .setEmail(user.getEmail())
-                .setUserName(user.getUserName())
-                .setFirstName(user.getFirstName())
-                .setLastName(user.getLastName())
+        UserDocument userDocument = UserDocument
+                .from(user)
                 .setRoles(Arrays.asList("USER"))
                 .setPassword(encoder.encode(user.getPassword()));
 
@@ -53,12 +50,6 @@ public class UserService {
             throw new EntityNotFoundException("Unable to find user " + username);
         }
 
-        return new User()
-                .setEmail(userDocument.getEmail())
-                .setUserName(userDocument.getUserName())
-                .setFirstName(userDocument.getFirstName())
-                .setLastName(userDocument.getLastName())
-                .setRoles(userDocument.getRoles())
-                .setPassword(userDocument.getPassword());
+        return User.from(userDocument);
     }
 }
