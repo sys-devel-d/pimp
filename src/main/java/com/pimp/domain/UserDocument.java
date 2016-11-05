@@ -10,13 +10,23 @@ import java.util.List;
 public class UserDocument {
 
     @Id
-    private String email;
+    private String userName;
     private String password;
     @Indexed
-    private String userName;
+    private String email;
     private String firstName;
     private String lastName;
     private List<String> roles;
+
+    public static UserDocument from(User user) {
+        return new UserDocument()
+                .setEmail(user.getEmail())
+                .setUserName(user.getUserName())
+                .setFirstName(user.getFirstName())
+                .setLastName(user.getLastName())
+                .setRoles(user.getRoles())
+                .setPassword(user.getPassword());
+    }
 
     public String getEmail() {
         return email;

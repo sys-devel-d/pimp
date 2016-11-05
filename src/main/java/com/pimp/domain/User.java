@@ -12,10 +12,10 @@ public class User {
 
     @NotEmpty
     @JsonProperty
-    private String email;
+    private String userName;
     @NotEmpty
     @JsonProperty
-    private String userName;
+    private String email;
     @Size(max = 255)
     @JsonProperty
     private String firstName;
@@ -26,6 +26,16 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private List<String> roles;
+
+    public static User from(UserDocument userDocument) {
+        return new User()
+                .setEmail(userDocument.getEmail())
+                .setUserName(userDocument.getUserName())
+                .setFirstName(userDocument.getFirstName())
+                .setLastName(userDocument.getLastName())
+                .setRoles(userDocument.getRoles())
+                .setPassword(userDocument.getPassword());
+    }
 
     public String getEmail() {
         return email;
