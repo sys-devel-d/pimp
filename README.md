@@ -9,6 +9,10 @@
 - Run mongo instance.
 - ```mongod```
 
+### Restore database with example data
+- Go to mongo_dump/
+- ``` mongorestore -d pimp pimp```
+
 ## Run without tests in one step
 - Go to project directory.
 - ``` mvn spring-boot:run```
