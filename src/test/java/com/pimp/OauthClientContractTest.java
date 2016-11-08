@@ -21,7 +21,7 @@ public class OauthClientContractTest {
     @Before
     public void setUp() throws Exception {
         ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/oauth/token");
+        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/api/oauth/token");
         resourceDetails.setClientId("foo");
         resourceDetails.setClientSecret("secret");
         template = new OAuth2RestTemplate(resourceDetails);
