@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
+import org.springframework.security.oauth2.client.token.grant.password.ResourceOwnerPasswordResourceDetails;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
@@ -20,11 +20,13 @@ public class OauthClientContractTest {
 
     @Before
     public void setUp() throws Exception {
-        ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails();
-        resourceDetails.setAccessTokenUri("http://localhost:" + port + "/api/oauth/token");
-        resourceDetails.setClientId("foo");
-        resourceDetails.setClientSecret("secret");
-        template = new OAuth2RestTemplate(resourceDetails);
+        ResourceOwnerPasswordResourceDetails details = new ResourceOwnerPasswordResourceDetails();
+        details.setUsername("FOO");
+        details.setPassword("BAR");
+        details.setAccessTokenUri("http://localhost:" + port + "/api/oauth/token");
+        details.setClientId("client");
+        details.setClientSecret("secret");
+        template = new OAuth2RestTemplate(details);
     }
 
     @Test
