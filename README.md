@@ -1,5 +1,7 @@
 # Pimp - Backend
 
+[![Build Status](https://travis-ci.org/sys-devel-d/pimp.svg?branch=master)](https://travis-ci.org/sys-devel-d/pimp)
+
 ## Initial Setup
 - Install Maven.
 - Install MongoDB.
