@@ -1,1 +1,1 @@
-{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"pimp.userDocument"},{"v":1,"key":{"email":1},"name":"email","ns":"pimp.userDocument"}]}
+{"options":{},"indexes":[{"v":1,"key":{"_id":1},"name":"_id_","ns":"pimp.userDocument"},{"v":1,"unique":true,"key":{"email":1},"name":"email","ns":"pimp.userDocument"}]}
