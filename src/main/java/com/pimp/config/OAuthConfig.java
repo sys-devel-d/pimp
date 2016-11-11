@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 @Configuration
 @EnableAuthorizationServer
@@ -20,25 +20,14 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
     @Qualifier(value = "authenticationManagerBean")
     private AuthenticationManager authenticationManager;
 
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients
-                .inMemory()
-                .withClient("client")
-                .secret("secret")
-                .authorizedGrantTypes("password", "refresh_token")
-                .authorities("USER")
-                .scopes("read", "write");
-    }
+    @Autowired
+    private ClientDetailsService clientDetailsService;
 
     @Override
-    public void configure(
-            AuthorizationServerSecurityConfigurer oauthServer)
-            throws Exception {
-        oauthServer
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()");
+    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        clients.withClientDetails(clientDetailsService);
     }
+
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {

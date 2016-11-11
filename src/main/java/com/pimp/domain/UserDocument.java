@@ -12,7 +12,7 @@ public class UserDocument {
     @Id
     private String userName;
     private String password;
-    @Indexed
+    @Indexed(unique = true)
     private String email;
     private String firstName;
     private String lastName;

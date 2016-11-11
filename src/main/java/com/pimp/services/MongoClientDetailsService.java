@@ -7,21 +7,35 @@ import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.client.BaseClientDetails;
+import org.springframework.stereotype.Service;
 
+@Service
 public class MongoClientDetailsService implements ClientDetailsService {
 
-    @Autowired
     private ClientDetailsRepository repository;
+
+    @Autowired
+    public MongoClientDetailsService(ClientDetailsRepository repository) {
+        this.repository = repository;
+    }
 
     @Override
     public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         ClientDocument clientDocument = repository.findByClientId(clientId);
 
-        return new BaseClientDetails(
+        BaseClientDetails baseClientDetails = new BaseClientDetails(
                 clientDocument.getClientId(),
                 clientDocument.resourceIdsAsString(),
                 clientDocument.scopesAsString(),
                 clientDocument.grantTypesAsString(),
                 clientDocument.authoritiesAsString());
+        baseClientDetails.setClientSecret(clientDocument.getClientSecret());
+
+        return baseClientDetails;
+    }
+
+    public void saveClientDetails(ClientDocument clientDocument) {
+
+        repository.save(clientDocument);
     }
 }
