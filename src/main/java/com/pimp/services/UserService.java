@@ -60,4 +60,5 @@ public class UserService {
 
         return User.from(userDocument);
     }
+
 }

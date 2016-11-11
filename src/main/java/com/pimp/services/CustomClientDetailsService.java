@@ -10,12 +10,12 @@ import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MongoClientDetailsService implements ClientDetailsService {
+public class CustomClientDetailsService implements ClientDetailsService {
 
     private ClientDetailsRepository repository;
 
     @Autowired
-    public MongoClientDetailsService(ClientDetailsRepository repository) {
+    public CustomClientDetailsService(ClientDetailsRepository repository) {
         this.repository = repository;
     }
 
