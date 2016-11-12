@@ -7,6 +7,8 @@ import com.pimp.commons.mongo.JSONError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
@@ -76,7 +78,7 @@ public class RestAdvice {
     return JSONError.unauthorized(e.getMessage());
   }
 
-  @ExceptionHandler({ForbiddenException.class})
+  @ExceptionHandler({ForbiddenException.class, AccessDeniedException.class})
   @ResponseStatus(HttpStatus.FORBIDDEN)
   @ResponseBody
   public JSONError forbidden(ForbiddenException e) {
@@ -108,7 +110,7 @@ public class RestAdvice {
     return JSONError.methodNotAllowed(e.getMessage());
   }
 
-  @ExceptionHandler({MethodArgumentNotValidException.class})
+  @ExceptionHandler({MethodArgumentNotValidException.class, HttpMediaTypeNotSupportedException.class})
   @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
   @ResponseBody
   protected JSONError methodArgumentNotValidException(MethodArgumentNotValidException e) throws JsonProcessingException {
