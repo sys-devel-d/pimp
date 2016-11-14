@@ -3,12 +3,17 @@ package com.pimp.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Size;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User {
+public class User implements UserDetails{
 
     @NotEmpty
     @JsonProperty
@@ -73,10 +78,6 @@ public class User {
         return this;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public User setPassword(String password) {
         this.password = password;
         return this;
@@ -100,5 +101,39 @@ public class User {
     public User setRoles(List<String> roles) {
         this.roles = roles;
         return this;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.asList(new SimpleGrantedAuthority("USER"));
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

@@ -3,6 +3,7 @@ package com.pimp.controller;
 import com.pimp.domain.User;
 import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = GET, path = "/{userName}")
     public User getUser(@PathVariable String userName) throws NotFoundException {
         User user = userService.findByUserName(userName);
@@ -32,6 +34,7 @@ public class UserController {
         return user;
     }
 
+    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = POST)
     public void createUser(@Valid @RequestBody User user) {
         userService.createUser(user);

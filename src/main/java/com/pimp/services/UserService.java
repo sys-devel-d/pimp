@@ -25,8 +25,12 @@ public class UserService {
 
     public UserDocument createUser(User user) {
         String userName = user.getUserName();
-        if (exists(userName)) {
-            throw new EntityAlreadyExistsException("User already exists: " + userName);
+        if (existsWithUsername(userName)) {
+            throw new EntityAlreadyExistsException("User already exists with username: " + userName);
+        }
+        String email = user.getEmail();
+        if (existsWithEmail(email)) {
+            throw new EntityAlreadyExistsException("User already exists with email: " + email);
         }
 
         UserDocument userDocument = UserDocument
@@ -39,8 +43,12 @@ public class UserService {
         return userDocument;
     }
 
-    private boolean exists(String userName) {
+    private boolean existsWithUsername(String userName) {
         return userRepository.findByUserName(userName) != null;
+    }
+
+    private boolean existsWithEmail(String email) {
+        return userRepository.findByEmail(email) != null;
     }
 
     public User findByUserName(String username) {
@@ -52,4 +60,5 @@ public class UserService {
 
         return User.from(userDocument);
     }
+
 }
