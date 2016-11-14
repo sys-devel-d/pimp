@@ -16,10 +16,11 @@ import com.pimp.model.chat.Message;
 @Controller
 public class ChatController {
 
-  @MessageMapping("/broker")
-  @SendTo("/rooms/message")
+  @MessageMapping("/broker/{room}")
+  @SendTo("/rooms/message/{room}")
   public Message message(Message message) throws Exception {
-    return new Message(message.getMessage());
+    return new Message(message.getMessage(),
+        message.getRoomId(), message.getUsername());
   }
 
 }
