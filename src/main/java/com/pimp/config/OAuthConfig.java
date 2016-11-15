@@ -45,8 +45,6 @@ public class OAuthConfig {
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-        private final String URL_PREFIX = "/api";
-
         @Autowired
         private TokenStore tokenStore;
 
@@ -66,7 +64,7 @@ public class OAuthConfig {
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
             endpoints
-                    .pathMapping("/oauth/token", URL_PREFIX + "/oauth/token")
+                    .pathMapping("/oauth/token", "/oauth/token")
                     .authenticationManager(authenticationManager)
                     .tokenStore(tokenStore);
         }
