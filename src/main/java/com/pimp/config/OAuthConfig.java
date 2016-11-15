@@ -17,13 +17,17 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
+import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+
+import java.util.Arrays;
 
 @Configuration
 public class OAuthConfig {
@@ -84,13 +88,21 @@ public class OAuthConfig {
                     .tokenServices(authorizationServerTokenServices)
                     .requestFactory(requestFactory)
                     .tokenEnhancer(tokenEnhancer)
-
-                    .tokenGranter(new ResourceOwnerPasswordTokenGranter(
-                            authenticationManager,
-                            authorizationServerTokenServices,
-                            clientDetailsService,
-                            requestFactory
-                    ));
+                    .tokenGranter(
+                            new CompositeTokenGranter(Arrays.asList(
+                                    new ResourceOwnerPasswordTokenGranter(
+                                            authenticationManager,
+                                            authorizationServerTokenServices,
+                                            clientDetailsService,
+                                            requestFactory
+                                    ),
+                                    new RefreshTokenGranter(
+                                            authorizationServerTokenServices,
+                                            clientDetailsService,
+                                            requestFactory)
+                            ))
+                    )
+            ;
         }
     }
 
