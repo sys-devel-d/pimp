@@ -1,9 +1,9 @@
-package com.pimp.model.chat;
-
-import java.io.Serializable;
+package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pimp.commons.mongo.IKeyedObject;
+
+import java.io.Serializable;
 
 public class Message implements Serializable, IKeyedObject{
 

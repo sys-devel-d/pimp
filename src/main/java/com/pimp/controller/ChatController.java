@@ -1,10 +1,9 @@
-package com.pimp.model.chat.api;
+package com.pimp.controller;
 
+import com.pimp.domain.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-
-import com.pimp.model.chat.Message;
 
 /**
  * The ChatController handles i/o socket communication,
