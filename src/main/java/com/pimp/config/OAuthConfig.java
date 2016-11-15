@@ -79,7 +79,6 @@ public class OAuthConfig {
             DefaultOAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
 
             endpoints
-                    .pathMapping("/oauth/token", "/oauth/token")
                     .tokenStore(tokenStore)
                     .authenticationManager(authenticationManager)
                     .tokenServices(authorizationServerTokenServices)
@@ -97,7 +96,7 @@ public class OAuthConfig {
 
 
     @Configuration
-    public class TokenStoreConfig {
+    public class TokenServicesConfig {
 
         @Bean
         public TokenStore tokenStore() {
