@@ -26,10 +26,11 @@ public class Message implements Serializable, IKeyedObject{
         this.message = message;
     }
 
-    public Message(String message, String roomId, String userName) {
+    public Message(String message, String roomId, String userName, Instant creationDate) {
         this.message = message;
         this.roomId = roomId;
         this.userName = userName;
+        this.creationDate = creationDate;
     }
 
     public String getMessage() {
@@ -43,7 +44,7 @@ public class Message implements Serializable, IKeyedObject{
 
     @Override
     public void setKey(String key) {
-
+        this.key = key;
     }
 
     public void setMessage(String message) {
