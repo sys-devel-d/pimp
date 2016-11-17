@@ -22,7 +22,7 @@ import java.util.Optional;
  * which is published to a corresponding route, e.g. /broker.
  * It also defines the called method, once a message could be received.
  * The return value of the method is broadcasted to
- * all subscribers of /rooms/messages
+ * all subscribers of /rooms/message/{room}
  */
 @RestController
 public class ChatController {
@@ -40,10 +40,7 @@ public class ChatController {
    */
   @SubscribeMapping("/initial-messages/{room}")
   public List<Message> sendInitialMessages(@DestinationVariable("room") String room) {
-    Optional<ChatRoom> chatRoom = chatRoomService.getEntitiesByKeys(chatRoomService.getKeys())
-      .stream()
-      .filter(element -> element.getRoomName().equals(room))
-      .findFirst();
+    Optional<ChatRoom> chatRoom = findChatRoomByName(room);
     if(chatRoom.isPresent()) {
       return chatRoom.get().getMessages();
     }
@@ -54,26 +51,32 @@ public class ChatController {
   @SendTo("/rooms/message/{room}")
   public Message message(Message message) throws Exception {
     Instant creationDate = Instant.now();
-    Optional<ChatRoom> first = chatRoomService.getEntitiesByKeys(chatRoomService.getKeys())
-      .stream()
-      .filter(element -> element.getRoomName().equals(message.getRoomId()))
-      .findFirst();
+    message.setCreationDate(creationDate);
+    message.setKey(new ObjectId().toString());
+    Optional<ChatRoom> first = findChatRoomByName(message.getRoomId());
     if (!first.isPresent()) {
       LOGGER.info("There is no chatroom with id " + message.getRoomId());
       // TODO should be removed, once we have a mechanism
       // for creating rooms with privileges
       ChatRoom chatRoom = chatRoomService.create();
       chatRoom.setRoomName(message.getRoomId());
-      chatRoom.getMessages().add(message);
+      chatRoom.addMessage(message);
       chatRoomService.insert(chatRoom);
     } else {
       ChatRoom chatRoom = first.get();
-      message.setKey(new ObjectId().toString());
-      message.setCreationDate(creationDate);
       chatRoom.addMessage(message);
       chatRoomService.update(chatRoom, false);
     }
+    LOGGER.info(message.toString());
     return message;
+  }
+
+  // TODO: move this out of controller
+  private Optional<ChatRoom> findChatRoomByName(String name) {
+    return chatRoomService.getEntitiesByKeys(chatRoomService.getKeys())
+            .stream()
+            .filter(element -> element.getRoomName().equals(name))
+            .findFirst();
   }
 
 }
