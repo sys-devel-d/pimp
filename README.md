@@ -19,9 +19,9 @@ This will install the following default users w/ passwords:
 
 ```json
 {
-    ZaphodRocks: "arthurdentisaweirdo",
-    foobar: "foobarbaz",
-    test: "12345678"
+    "ZaphodRocks": "arthurdentisaweirdo",
+    "foobar": "foobarbaz",
+    "test": "12345678"
 }
 ```
 
