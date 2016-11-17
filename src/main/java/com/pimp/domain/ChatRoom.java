@@ -3,17 +3,19 @@ package com.pimp.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pimp.commons.mongo.IKeyedObject;
+import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoom implements IKeyedObject {
 
   @Id
-  private String key;
+  private String key = new ObjectId().toString();
   @NotEmpty
   @JsonProperty
   private String roomName;
@@ -21,11 +23,11 @@ public class ChatRoom implements IKeyedObject {
   @JsonProperty
   private String creator;
   @JsonProperty
-  private Date createdAt;
+  private Instant createdAt = Instant.now();
   @JsonProperty
-  private Date lastModifiedAt;
-  private List<User> participants;
-  private List<Message> messages;
+  private Instant lastModifiedAt = Instant.now();
+  private List<User> participants = new ArrayList<>();
+  private List<Message> messages = new ArrayList<>();
 
   public String getRoomName() {
     return roomName;
@@ -43,19 +45,19 @@ public class ChatRoom implements IKeyedObject {
     this.creator = creator;
   }
 
-  public Date getCreatedAt() {
+  public Instant getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(Date createdAt) {
+  public void setCreatedAt(Instant createdAt) {
     this.createdAt = createdAt;
   }
 
-  public Date getLastModifiedAt() {
+  public Instant getLastModifiedAt() {
     return lastModifiedAt;
   }
 
-  public void setLastModifiedAt(Date lastModifiedAt) {
+  public void setLastModifiedAt(Instant lastModifiedAt) {
     this.lastModifiedAt = lastModifiedAt;
   }
 
