@@ -67,7 +67,6 @@ public class ChatController {
       chatRoom.addMessage(message);
       chatRoomService.update(chatRoom, false);
     }
-    LOGGER.info(message.toString());
     return message;
   }
 
