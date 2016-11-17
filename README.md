@@ -15,6 +15,16 @@
 - Go to mongo_dump/
 - ``` mongorestore -d pimp pimp```
 
+This will install the following default users w/ passwords:
+
+```json
+{
+    ZaphodRocks: "arthurdentisaweirdo",
+    foobar: "foobarbaz",
+    test: "12345678"
+}
+```
+
 ## Run without tests in one step
 - Go to project directory.
 - ``` mvn spring-boot:run```
