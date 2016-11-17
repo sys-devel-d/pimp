@@ -19,24 +19,24 @@ public class ClientDocumentTest {
     @Theory
     public void testResourceIdsAsString(List<String> data) throws Exception {
         ClientDocument clientDocument = new ClientDocument().setResourceIds(data);
-        assertThat(clientDocument.resourceIdsAsString()).isEqualTo("foo, bar, baz");
+        assertThat(clientDocument.resourceIdsAsString()).isEqualTo("foo,bar,baz");
     }
 
     @Theory
     public void testGrantTypesAsString(List<String> data) throws Exception {
         ClientDocument clientDocument = new ClientDocument().setGrantTypes(data);
-        assertThat(clientDocument.grantTypesAsString()).isEqualTo("foo, bar, baz");
+        assertThat(clientDocument.grantTypesAsString()).isEqualTo("foo,bar,baz");
     }
 
     @Theory
     public void testAuthoritiesAsString(List<String> data) throws Exception {
         ClientDocument clientDocument = new ClientDocument().setAuthorities(data);
-        assertThat(clientDocument.authoritiesAsString()).isEqualTo("foo, bar, baz");
+        assertThat(clientDocument.authoritiesAsString()).isEqualTo("foo,bar,baz");
     }
 
     @Theory
     public void testScopesAsString(List<String> data) throws Exception {
         ClientDocument clientDocument = new ClientDocument().setScopes(data);
-        assertThat(clientDocument.scopesAsString()).isEqualTo("foo, bar, baz");
+        assertThat(clientDocument.scopesAsString()).isEqualTo("foo,bar,baz");
     }
 }

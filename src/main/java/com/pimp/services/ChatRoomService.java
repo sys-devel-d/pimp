@@ -17,8 +17,6 @@ import com.pimp.domain.ChatRoom;
 
 public class ChatRoomService extends AbstractEntityService<ChatRoom> implements IChatRoomService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(ChatRoomService.class);
-
   public ChatRoomService(IKeyedObjectRepository<ChatRoom> entityRepository) {
     super(entityRepository, ChatRoom.class);
   }
@@ -34,8 +32,6 @@ public class ChatRoomService extends AbstractEntityService<ChatRoom> implements 
       throw new EntityValidationException("An entity for the key exists already");
     } else if (chatRoom.getKey() == null) {
       throw new EntityValidationException("The key should not be null");
-    } else {
-      LOGGER.info("Entity successfully created!");
     }
   }
 

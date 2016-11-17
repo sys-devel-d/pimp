@@ -1,7 +1,7 @@
-package com.pimp.model.chat.api;
+package com.pimp.controller;
 
 import com.pimp.domain.ChatRoom;
-import com.pimp.model.chat.Message;
+import com.pimp.domain.Message;
 import com.pimp.services.IChatRoomService;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -55,7 +55,6 @@ public class ChatController {
     message.setKey(new ObjectId().toString());
     Optional<ChatRoom> first = findChatRoomByName(message.getRoomId());
     if (!first.isPresent()) {
-      LOGGER.info("There is no chatroom with id " + message.getRoomId());
       // TODO should be removed, once we have a mechanism
       // for creating rooms with privileges
       ChatRoom chatRoom = chatRoomService.create();

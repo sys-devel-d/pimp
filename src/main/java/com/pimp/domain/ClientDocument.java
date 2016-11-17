@@ -38,7 +38,7 @@ public class ClientDocument {
     }
 
     private String collectAsString(List<String> raw) {
-        return raw.stream().map(String::toString).collect(Collectors.joining(", "));
+        return raw.stream().map(String::toString).collect(Collectors.joining(","));
     }
 
     public String getClientId() {
