@@ -1,10 +1,10 @@
-package com.pimp.model.chat;
-
-import java.io.Serializable;
-import java.time.Instant;
+package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pimp.commons.mongo.IKeyedObject;
+
+import java.io.Serializable;
+import java.time.Instant;
 
 public class Message implements Serializable, IKeyedObject{
 

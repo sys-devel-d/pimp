@@ -1,17 +1,15 @@
 package com.pimp.domain;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.pimp.commons.mongo.IKeyedObject;
 import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.pimp.commons.mongo.IKeyedObject;
-import com.pimp.model.chat.Message;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoom implements IKeyedObject {

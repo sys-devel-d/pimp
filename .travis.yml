@@ -9,4 +9,5 @@ services:
 before_script:
   - sleep 15
 
+install: ./restore_db.sh
 

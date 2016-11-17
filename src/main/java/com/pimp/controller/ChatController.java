@@ -1,8 +1,8 @@
-package com.pimp.model.chat.api;
+package com.pimp.controller;
 
-import java.time.Instant;
-import java.util.Optional;
-
+import com.pimp.domain.ChatRoom;
+import com.pimp.domain.Message;
+import com.pimp.services.IChatRoomService;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,9 +10,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pimp.domain.ChatRoom;
-import com.pimp.model.chat.Message;
-import com.pimp.services.IChatRoomService;
+import java.time.Instant;
+import java.util.Optional;
+
 
 /**
  * The ChatController handles i/o socket communication,

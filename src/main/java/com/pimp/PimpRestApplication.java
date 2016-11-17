@@ -1,5 +1,6 @@
 package com.pimp;
 
+import com.pimp.controller.ChatController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,6 @@ import org.springframework.data.mongodb.repository.support.MongoRepositoryFactor
 
 import com.pimp.commons.exceptions.SpringBeanCreationException;
 import com.pimp.domain.ChatRoom;
-import com.pimp.model.chat.api.ChatController;
 import com.pimp.repositories.ChatRoomRepository;
 import com.pimp.repositories.IChatRoomRepository;
 import com.pimp.services.ChatRoomService;
