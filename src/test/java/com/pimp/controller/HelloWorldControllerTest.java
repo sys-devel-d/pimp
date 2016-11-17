@@ -6,7 +6,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class HelloWorldControllerTest {
@@ -20,6 +19,6 @@ public class HelloWorldControllerTest {
 
     @Test
     public void testSayHello() throws Exception {
-        server.perform(get("/hello")).andExpect(status().isOk()).andExpect(content().string("{\"message\":\"Hello, world.\",\"key\":null}"));
+        server.perform(get("/hello")).andExpect(status().isOk());
     }
 }

@@ -50,11 +50,11 @@ public class Message implements Serializable, IKeyedObject{
         this.message = message;
     }
 
-    public String getUsername() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setUsername(String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 

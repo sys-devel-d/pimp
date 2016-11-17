@@ -20,7 +20,7 @@ public class ChatController {
   @SendTo("/rooms/message/{room}")
   public Message message(Message message) throws Exception {
     return new Message(message.getMessage(),
-        message.getRoomId(), message.getUsername());
+        message.getRoomId(), message.getUserName());
   }
 
 }
