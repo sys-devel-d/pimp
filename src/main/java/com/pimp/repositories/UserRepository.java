@@ -10,5 +10,6 @@ public interface UserRepository extends MongoRepository<UserDocument, String> {
     public UserDocument save(UserDocument user);
 
     public UserDocument findByEmail(String email);
+
 }
 
