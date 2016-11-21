@@ -1,16 +1,11 @@
 package com.pimp.repositories;
 
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
+import com.pimp.domain.ChatRoomDocument;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.pimp.domain.ChatRoom;
+public interface ChatRoomRepository extends MongoRepository<ChatRoomDocument, String> {
 
-/**
- * Created by julianfink on 17/11/16.
- */
-public class ChatRoomRepository extends CustomKeyedObjectRepository<ChatRoom> implements IChatRoomRepository {
+  public ChatRoomDocument findByRoomName(String roomName);
 
-  public ChatRoomRepository(MongoEntityInformation<ChatRoom, String> metadata, MongoOperations mongoOperations) {
-    super(metadata, mongoOperations);
-  }
+  public ChatRoomDocument save(ChatRoomDocument chatRoomDocument);
 }
