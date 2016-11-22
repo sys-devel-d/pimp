@@ -2,7 +2,9 @@ package com.pimp.controller;
 
 import com.pimp.domain.ChatRoom;
 import com.pimp.domain.Message;
+import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
+import com.pimp.services.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -25,19 +27,30 @@ import java.util.List;
 public class ChatController {
 
   private ChatRoomService chatRoomService;
+  private UserService userService;
 
   @Autowired
-  public ChatController(ChatRoomService chatRoomService) {
+  public ChatController(ChatRoomService chatRoomService, UserService userService) {
     this.chatRoomService = chatRoomService;
+    this.userService = userService;
   }
 
   /**
    * This is only invoked when the client joins the room (subscribes).
    * On the client this is exposed as `/app/initial-messages/{room}`
    */
-  @SubscribeMapping("/initial-messages/{room}")
-  public List<Message> sendInitialMessages(@DestinationVariable("room") String room) {
-    ChatRoom chatRoom = chatRoomService.createIfNotExists(room);
+  @SubscribeMapping("/initial-messages/{room}/{user}")
+  public List<Message> sendInitialMessages(
+          @DestinationVariable("room") String roomName,
+          @DestinationVariable("user") String userName) {
+    User user = userService.findByUserName(userName);
+    ChatRoom chatRoom = chatRoomService.createIfNotExists(roomName);
+    if(!user.getRooms().contains(roomName)) {
+      user.addRoom(roomName);
+      userService.save(user);
+      chatRoom.addParticipant(user);
+      chatRoomService.save(chatRoom);
+    }
     return chatRoom.getMessages();
   }
 
@@ -47,6 +60,9 @@ public class ChatController {
     Instant creationDate = Instant.now();
     message.setCreationDate(creationDate);
     message.setKey(new ObjectId().toString());
+    /* Here we can be sure that the room exists as it must have been
+     * created in this.sendInitialMessage() if it hadn't previously existed
+     */
     ChatRoom chatRoom = chatRoomService.findByRoomName(message.getRoomId());
     chatRoom.addMessage(message);
     chatRoomService.save(chatRoom);

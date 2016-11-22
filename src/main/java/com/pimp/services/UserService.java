@@ -67,6 +67,10 @@ public class UserService {
     return User.from(userDocument);
   }
 
+  public void save(User user) {
+    userRepository.save(UserDocument.from(user));
+  }
+
   public List<User> query(String query, List<String> queryParameter) {
     Query mongoQuery = new Query();
     Criteria criteria = new Criteria();

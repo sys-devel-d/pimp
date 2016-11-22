@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @NotEmpty
     @JsonProperty
@@ -145,6 +145,11 @@ public class User implements UserDetails{
 
     public User setRooms(List<String> rooms) {
         this.rooms = rooms;
+        return this;
+    }
+
+    public User addRoom(String roomName) {
+        this.rooms.add(roomName);
         return this;
     }
 }
