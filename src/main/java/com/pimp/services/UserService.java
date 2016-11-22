@@ -1,5 +1,6 @@
 package com.pimp.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,6 +44,10 @@ public class UserService {
 
     UserDocument userDocument =
         UserDocument.from(user).setRoles(Arrays.asList("USER")).setPassword(encoder.encode(user.getPassword()));
+
+    if(userDocument.getRooms() == null) {
+      userDocument.setRooms(new ArrayList<>());
+    }
 
     userRepository.save(userDocument);
 

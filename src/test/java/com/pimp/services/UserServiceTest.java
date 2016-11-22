@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,6 +50,7 @@ public class UserServiceTest {
         assertThat(userDocument.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(userDocument.getLastName()).isEqualTo(user.getLastName());
         assertThat(userDocument.getRoles()).isEqualTo(Arrays.asList("USER"));
+        assertThat(userDocument.getRooms()).isEqualTo(new ArrayList<>());
         assertThat(encoder.matches(user.getPassword(), userDocument.getPassword())).isTrue();
     }
 

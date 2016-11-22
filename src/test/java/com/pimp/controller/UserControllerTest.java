@@ -90,4 +90,14 @@ public class UserControllerTest {
         server.perform(get("/users/foo/rooms"))
                 .andExpect(content().json("[\"lobby\", \"beer\"]"));
     }
+
+    @Test
+    public void testGetUserRoomsIfHasNoRooms() throws Exception {
+        when(userService.findByUserName("noRoomsGuy")).thenReturn(
+                new User().setUserName("noRoomsGuy")
+        );
+
+        server.perform(get("/users/noRoomsGuy/rooms"))
+                .andExpect(content().json("[]"));
+    }
 }
