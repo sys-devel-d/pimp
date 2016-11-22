@@ -59,7 +59,11 @@ public class ChatRoomService {
     chatRoomRepository.save(ChatRoomDocument.from(chatRoom));
   }
 
-  public ChatRoom createIfNotExists(String roomName) {
+  /**
+   * Fetches a room by roomName from database.
+   * If it doesn't exists then it creates one and saves it to database.
+   */
+  public ChatRoom getExistingOrCreate(String roomName) {
     ChatRoomDocument chatRoomDocument = chatRoomRepository.findByRoomName(roomName);
 
     if(chatRoomDocument == null) {

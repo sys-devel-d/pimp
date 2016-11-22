@@ -6,7 +6,7 @@ import com.pimp.commons.mongo.IKeyedObject;
 import java.io.Serializable;
 import java.time.Instant;
 
-public class Message implements Serializable, IKeyedObject{
+public class Message implements Serializable, IKeyedObject {
 
     @JsonProperty
     private String message;

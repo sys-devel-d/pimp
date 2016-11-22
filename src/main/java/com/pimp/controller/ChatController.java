@@ -43,8 +43,31 @@ public class ChatController {
   public List<Message> sendInitialMessages(
           @DestinationVariable("room") String roomName,
           @DestinationVariable("user") String userName) {
+    return handleSubscription(userName, roomName);
+  }
+
+  @MessageMapping("/broker/{room}")
+  @SendTo("/rooms/message/{room}")
+  public Message message(Message message) throws Exception {
+    return handleIncomingMessage(message);
+  }
+
+  private Message handleIncomingMessage(Message message) {
+    Instant creationDate = Instant.now();
+    message.setCreationDate(creationDate);
+    message.setKey(new ObjectId().toString());
+    /* Here we can be sure that the room exists as it must have been
+     * created in `this.handleSubscription()` if it hadn't previously existed
+     */
+    ChatRoom chatRoom = chatRoomService.findByRoomName(message.getRoomId());
+    chatRoom.addMessage(message);
+    chatRoomService.save(chatRoom);
+    return message;
+  }
+
+  private List<Message> handleSubscription(String userName, String roomName) {
     User user = userService.findByUserName(userName);
-    ChatRoom chatRoom = chatRoomService.createIfNotExists(roomName);
+    ChatRoom chatRoom = chatRoomService.getExistingOrCreate(roomName);
     if(!user.getRooms().contains(roomName)) {
       user.addRoom(roomName);
       userService.save(user);
@@ -52,20 +75,5 @@ public class ChatController {
       chatRoomService.save(chatRoom);
     }
     return chatRoom.getMessages();
-  }
-
-  @MessageMapping("/broker/{room}")
-  @SendTo("/rooms/message/{room}")
-  public Message message(Message message) throws Exception {
-    Instant creationDate = Instant.now();
-    message.setCreationDate(creationDate);
-    message.setKey(new ObjectId().toString());
-    /* Here we can be sure that the room exists as it must have been
-     * created in this.sendInitialMessage() if it hadn't previously existed
-     */
-    ChatRoom chatRoom = chatRoomService.findByRoomName(message.getRoomId());
-    chatRoom.addMessage(message);
-    chatRoomService.save(chatRoom);
-    return message;
   }
 }
