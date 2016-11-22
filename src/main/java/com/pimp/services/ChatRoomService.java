@@ -34,8 +34,7 @@ public class ChatRoomService {
       throw new EntityAlreadyExistsException("ChatRoom already exists with roomName: " + roomName);
     }
 
-    ChatRoomDocument chatRoomDocument =
-            ChatRoomDocument.from(chatRoom);
+    ChatRoomDocument chatRoomDocument = ChatRoomDocument.from(chatRoom);
 
     chatRoomRepository.save(chatRoomDocument);
 
