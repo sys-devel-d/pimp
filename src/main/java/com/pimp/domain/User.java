@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class User implements UserDetails{
+public class User implements UserDetails {
 
     @NotEmpty
     @JsonProperty
@@ -31,6 +31,7 @@ public class User implements UserDetails{
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private List<String> roles;
+    private List<String> rooms;
 
     public static User from(UserDocument userDocument) {
         return new User()
@@ -39,7 +40,8 @@ public class User implements UserDetails{
                 .setFirstName(userDocument.getFirstName())
                 .setLastName(userDocument.getLastName())
                 .setRoles(userDocument.getRoles())
-                .setPassword(userDocument.getPassword());
+                .setPassword(userDocument.getPassword())
+                .setRooms(userDocument.getRooms());
     }
 
     public String getEmail() {
@@ -135,5 +137,19 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public List<String> getRooms() {
+        return rooms;
+    }
+
+    public User setRooms(List<String> rooms) {
+        this.rooms = rooms;
+        return this;
+    }
+
+    public User addRoom(String roomName) {
+        this.rooms.add(roomName);
+        return this;
     }
 }

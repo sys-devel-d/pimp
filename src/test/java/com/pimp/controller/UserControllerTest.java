@@ -12,6 +12,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,5 +78,26 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"foo@bar.org\"}"))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void testGetUserRooms() throws Exception {
+        List<String> rooms = Arrays.asList("lobby", "beer");
+        when(userService.findByUserName("foo")).thenReturn(
+                new User().setUserName("foo").setRooms(rooms)
+        );
+
+        server.perform(get("/users/foo/rooms"))
+                .andExpect(content().json("[\"lobby\", \"beer\"]"));
+    }
+
+    @Test
+    public void testGetUserRoomsIfHasNoRooms() throws Exception {
+        when(userService.findByUserName("noRoomsGuy")).thenReturn(
+                new User().setUserName("noRoomsGuy")
+        );
+
+        server.perform(get("/users/noRoomsGuy/rooms"))
+                .andExpect(content().json("[]"));
     }
 }

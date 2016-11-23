@@ -17,6 +17,7 @@ public class UserDocument {
     private String firstName;
     private String lastName;
     private List<String> roles;
+    private List<String> rooms;
 
     public static UserDocument from(User user) {
         return new UserDocument()
@@ -25,7 +26,8 @@ public class UserDocument {
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
                 .setRoles(user.getRoles())
-                .setPassword(user.getPassword());
+                .setPassword(user.getPassword())
+                .setRooms(user.getRooms());
     }
 
     public String getEmail() {
@@ -79,6 +81,15 @@ public class UserDocument {
 
     public UserDocument setRoles(List<String> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    public List<String> getRooms() {
+        return rooms;
+    }
+
+    public UserDocument setRooms(List<String> rooms) {
+        this.rooms = rooms;
         return this;
     }
 }

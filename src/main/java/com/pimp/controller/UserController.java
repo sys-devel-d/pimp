@@ -1,10 +1,8 @@
 package com.pimp.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.validation.Valid;
-
+import com.pimp.domain.ChatRoom;
+import com.pimp.domain.User;
+import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pimp.domain.User;
-import com.pimp.services.UserService;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -39,6 +39,15 @@ public class UserController {
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = GET, path = "/{userName}/rooms")
+  public List<String> getRooms(@PathVariable String userName) {
+    User user = userService.findByUserName(userName);
+    List<String> rooms = user.getRooms();
+    if(rooms == null) return new ArrayList<>();
+    return rooms;
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST)
   public void createUser(@Valid @RequestBody User user) {
     userService.createUser(user);
@@ -46,7 +55,7 @@ public class UserController {
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/search/{query}")
-  public List<User> createUser(@PathVariable String query) {
+  public List<User> searchUser(@PathVariable String query) {
     if (query.length() < 3) {
       throw new IllegalArgumentException("Search string should have a length >= 3.");
     }
