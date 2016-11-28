@@ -40,6 +40,7 @@ public class ChatController {
    * On the client this is exposed as `/app/initial-messages/{room}`
    */
   @SubscribeMapping("/initial-messages/{room}/{user}")
+  // TODO: Get user by token and remove destination variable
   public List<Message> sendInitialMessages(
           @DestinationVariable("room") String roomName,
           @DestinationVariable("user") String userName) {
@@ -53,6 +54,7 @@ public class ChatController {
   }
 
   private Message handleIncomingMessage(Message message) {
+    System.out.println(message.getRoomId());
     Instant creationDate = Instant.now();
     message.setCreationDate(creationDate);
     message.setKey(new ObjectId().toString());
