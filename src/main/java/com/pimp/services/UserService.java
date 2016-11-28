@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -45,10 +44,6 @@ public class UserService {
     UserDocument userDocument = UserDocument.from(user)
             .setRoles(Arrays.asList("USER"))
             .setPassword(encoder.encode(user.getPassword()));
-
-    if(userDocument.getRooms() == null) {
-      userDocument.setRooms(new ArrayList<>());
-    }
 
     userRepository.save(userDocument);
 

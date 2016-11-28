@@ -50,7 +50,6 @@ public class UserServiceTest {
         assertThat(userDocument.getFirstName()).isEqualTo(user.getFirstName());
         assertThat(userDocument.getLastName()).isEqualTo(user.getLastName());
         assertThat(userDocument.getRoles()).isEqualTo(Arrays.asList("USER"));
-        assertThat(userDocument.getRooms()).isEqualTo(new ArrayList<>());
         assertThat(encoder.matches(user.getPassword(), userDocument.getPassword())).isTrue();
     }
 

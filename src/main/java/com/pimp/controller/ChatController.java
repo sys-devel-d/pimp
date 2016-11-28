@@ -69,9 +69,7 @@ public class ChatController {
   private List<Message> handleSubscription(String userName, String roomName) {
     User user = userService.findByUserName(userName);
     ChatRoom chatRoom = chatRoomService.getExistingOrCreate(roomName);
-    if(!user.getRooms().contains(roomName)) {
-      user.addRoom(roomName);
-      userService.save(user);
+    if(chatRoom.getParticipants().contains(user)) {
       chatRoom.addParticipant(user);
       chatRoomService.save(chatRoom);
     }
