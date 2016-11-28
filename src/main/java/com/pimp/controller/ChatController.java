@@ -54,7 +54,6 @@ public class ChatController {
   }
 
   private Message handleIncomingMessage(Message message) {
-    System.out.println(message.getRoomId());
     Instant creationDate = Instant.now();
     message.setCreationDate(creationDate);
     message.setKey(new ObjectId().toString());

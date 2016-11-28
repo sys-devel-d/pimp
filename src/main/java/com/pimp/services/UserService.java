@@ -1,11 +1,10 @@
 package com.pimp.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
+import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.domain.User;
+import com.pimp.domain.UserDocument;
+import com.pimp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -13,11 +12,11 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pimp.commons.exceptions.EntityAlreadyExistsException;
-import com.pimp.commons.exceptions.EntityNotFoundException;
-import com.pimp.domain.User;
-import com.pimp.domain.UserDocument;
-import com.pimp.repositories.UserRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
