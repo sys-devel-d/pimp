@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoom {
@@ -19,11 +17,8 @@ public class ChatRoom {
     private List<Message> messages;
     private List<User> participants;
 
-    // This is just for checking. Is not saved in DB.
-    public static Set<String> ROOM_TYPES = new HashSet<String>(){{
-        add("PRIVATE");
-        add("GROUP");
-    }};
+    public static String ROOM_TYPE_PRIVATE = "PRIVATE";
+    public static String ROOM_TYPE_GROUP = "GROUP";
 
     public static ChatRoom from(ChatRoomDocument chatRoomDocument) {
         return new ChatRoom()

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,26 +38,21 @@ public class RoomController {
     }
 
     @PreAuthorize("#oauth2.hasScope('user_actions')")
-    @RequestMapping(method = POST, path="/init")
-    public ResponseEntity<ChatRoom> initChatRoom(@RequestBody HashMap<String, String> requestData) throws NoSuchAlgorithmException {
-        // Right now User does not have an ID. So using the usernames is a work around
-        String inviteeUserName = requestData.get("invitee");
-        String invitedUserName = requestData.get("invited");
-        String roomType = requestData.get("roomType");
-        if(invitedUserName != null && inviteeUserName != null &&
-           roomType != null && ChatRoom.ROOM_TYPES.contains(roomType) &&
-           !invitedUserName.equals(inviteeUserName)) {
+    @RequestMapping(method = POST, path="/init-private")
+    public ResponseEntity<ChatRoom> initPrivateChatRoom(@RequestBody User invited) throws NoSuchAlgorithmException {
 
-            User invitee = userService.findByUserName(inviteeUserName);
-            User invited = userService.findByUserName(invitedUserName);
-            ChatRoom chatRoom = chatRoomService.initUniqueRoom(invitee, invited, roomType);
+        User invitee = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if(invited != null && !invitee.equals(invited)) {
+            ChatRoom chatRoom = chatRoomService
+                    .initUniqueRoom(Arrays.asList(invitee, invited), ChatRoom.ROOM_TYPE_PRIVATE);
             if(chatRoom != null) {
                 return ResponseEntity.ok(chatRoom);
             }
+            // chat room has already been initialized
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-        // Accepted but not processed
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(null);
+        // Bad parameters
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @PreAuthorize("#oauth2.hasScope('user_actions')")

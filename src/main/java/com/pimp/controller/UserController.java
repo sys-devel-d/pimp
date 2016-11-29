@@ -4,6 +4,7 @@ import com.pimp.domain.User;
 import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -46,7 +48,12 @@ public class UserController {
     if (query.length() < 3) {
       throw new IllegalArgumentException("Search string should have a length >= 3.");
     }
+    User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    List<User> foundUsers = userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
 
-    return userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
+    return foundUsers.stream()
+            .filter(
+              user -> !user.getUserName().equals(loggedInUser.getUserName())
+            ).collect(Collectors.toList());
   }
 }

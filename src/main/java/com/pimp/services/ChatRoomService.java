@@ -88,18 +88,27 @@ public class ChatRoomService {
     return mongoOperations.find(mongoQuery, ChatRoomDocument.class).stream().map(ChatRoom::from).collect(Collectors.toList());
   }
 
-  public ChatRoom initUniqueRoom(User invitee, User invited, String roomType) throws NoSuchAlgorithmException {
-    String uniqueRoomName = md5FromUsernames(invitee, invited);
+  public ChatRoom initUniqueRoom(List<User> users, String roomType) throws NoSuchAlgorithmException {
+    if(users.size() == 2 && roomType.equals(ChatRoom.ROOM_TYPE_PRIVATE)) {
+      User invitee = users.get(0);
+      User invited = users.get(1);
 
-    if(!existsWithRoomName(uniqueRoomName)) {
-      ChatRoomDocument chatRoomDocument = createChatRoom(
-              new ChatRoom()
-                .setRoomName(uniqueRoomName)
-                .setParticipants(Arrays.asList(invitee, invited))
-                .setMessages(new ArrayList<>())
-                .setRoomType(roomType)
-      );
-      return ChatRoom.from(chatRoomDocument);
+      String uniqueRoomName = md5FromUsernames(invitee, invited);
+
+      if(!existsWithRoomName(uniqueRoomName)) {
+        ChatRoomDocument chatRoomDocument = createChatRoom(
+                new ChatRoom()
+                        .setRoomName(uniqueRoomName)
+                        .setParticipants(users)
+                        .setMessages(new ArrayList<>())
+                        .setRoomType(roomType)
+        );
+        return ChatRoom.from(chatRoomDocument);
+      }
+      // room already exists, do nothing
+    }
+    else if(users.size() >= 1 && roomType.equals(ChatRoom.ROOM_TYPE_GROUP)) {
+
     }
 
     return null;
