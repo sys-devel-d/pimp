@@ -1,10 +1,10 @@
 package com.pimp.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
+import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.domain.User;
+import com.pimp.domain.UserDocument;
+import com.pimp.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,11 +12,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.pimp.commons.exceptions.EntityAlreadyExistsException;
-import com.pimp.commons.exceptions.EntityNotFoundException;
-import com.pimp.domain.User;
-import com.pimp.domain.UserDocument;
-import com.pimp.repositories.UserRepository;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -42,12 +41,9 @@ public class UserService {
       throw new EntityAlreadyExistsException("User already exists with email: " + email);
     }
 
-    UserDocument userDocument =
-        UserDocument.from(user).setRoles(Arrays.asList("USER")).setPassword(encoder.encode(user.getPassword()));
-
-    if(userDocument.getRooms() == null) {
-      userDocument.setRooms(new ArrayList<>());
-    }
+    UserDocument userDocument = UserDocument.from(user)
+            .setRoles(Arrays.asList("USER"))
+            .setPassword(encoder.encode(user.getPassword()));
 
     userRepository.save(userDocument);
 
@@ -79,10 +75,12 @@ public class UserService {
   public List<User> query(String query, List<String> queryParameter) {
     Query mongoQuery = new Query();
     Criteria criteria = new Criteria();
-    Criteria[] criterias =
-        queryParameter.stream().map(param -> Criteria.where(param).regex(query)).toArray(Criteria[]::new);
+    Criteria[] criterias = queryParameter.stream()
+            .map(param -> Criteria.where(param).regex(Pattern.compile(query, Pattern.CASE_INSENSITIVE)))
+            .toArray(Criteria[]::new);
     criteria.orOperator(criterias);
     mongoQuery.addCriteria(criteria);
-    return mongoOperations.find(mongoQuery, UserDocument.class).stream().map(User::from).collect(Collectors.toList());
+    return mongoOperations.find(mongoQuery, UserDocument.class)
+            .stream().map(User::from).collect(Collectors.toList());
   }
 }

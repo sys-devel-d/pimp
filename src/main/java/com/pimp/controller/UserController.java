@@ -1,6 +1,5 @@
 package com.pimp.controller;
 
-import com.pimp.domain.ChatRoom;
 import com.pimp.domain.User;
 import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,18 +31,7 @@ public class UserController {
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/{userName}")
   public User getUser(@PathVariable String userName) throws NotFoundException {
-    User user = userService.findByUserName(userName);
-
-    return user;
-  }
-
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
-  @RequestMapping(method = GET, path = "/{userName}/rooms")
-  public List<String> getRooms(@PathVariable String userName) {
-    User user = userService.findByUserName(userName);
-    List<String> rooms = user.getRooms();
-    if(rooms == null) return new ArrayList<>();
-    return rooms;
+    return userService.findByUserName(userName);
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")

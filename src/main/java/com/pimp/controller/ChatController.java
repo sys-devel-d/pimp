@@ -40,6 +40,7 @@ public class ChatController {
    * On the client this is exposed as `/app/initial-messages/{room}`
    */
   @SubscribeMapping("/initial-messages/{room}/{user}")
+  // TODO: Get user by token and remove destination variable
   public List<Message> sendInitialMessages(
           @DestinationVariable("room") String roomName,
           @DestinationVariable("user") String userName) {
@@ -68,9 +69,7 @@ public class ChatController {
   private List<Message> handleSubscription(String userName, String roomName) {
     User user = userService.findByUserName(userName);
     ChatRoom chatRoom = chatRoomService.getExistingOrCreate(roomName);
-    if(!user.getRooms().contains(roomName)) {
-      user.addRoom(roomName);
-      userService.save(user);
+    if(chatRoom.getParticipants().contains(user)) {
       chatRoom.addParticipant(user);
       chatRoomService.save(chatRoom);
     }

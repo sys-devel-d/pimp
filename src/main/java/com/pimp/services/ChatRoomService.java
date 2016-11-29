@@ -4,6 +4,7 @@ import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.ChatRoom;
 import com.pimp.domain.ChatRoomDocument;
+import com.pimp.domain.User;
 import com.pimp.repositories.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -11,7 +12,11 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,13 +82,37 @@ public class ChatRoomService {
     return ChatRoom.from(chatRoomDocument);
   }
 
-  public List<ChatRoom> query(String query, List<String> queryParameter) {
+  public List<ChatRoom> findUsersRooms(User user) {
     Query mongoQuery = new Query();
-    Criteria criteria = new Criteria();
-    Criteria[] criterias =
-            queryParameter.stream().map(param -> Criteria.where(param).regex(query)).toArray(Criteria[]::new);
-    criteria.orOperator(criterias);
-    mongoQuery.addCriteria(criteria);
+    mongoQuery.addCriteria(Criteria.where("participants.userName").in(user.getUserName()));
     return mongoOperations.find(mongoQuery, ChatRoomDocument.class).stream().map(ChatRoom::from).collect(Collectors.toList());
+  }
+
+  public ChatRoom initUniqueRoom(User invitee, User invited, String roomType) throws NoSuchAlgorithmException {
+    String uniqueRoomName = md5FromUsernames(invitee, invited);
+
+    if(!existsWithRoomName(uniqueRoomName)) {
+      ChatRoomDocument chatRoomDocument = createChatRoom(
+              new ChatRoom()
+                .setRoomName(uniqueRoomName)
+                .setParticipants(Arrays.asList(invitee, invited))
+                .setMessages(new ArrayList<>())
+                .setRoomType(roomType)
+      );
+      return ChatRoom.from(chatRoomDocument);
+    }
+
+    return null;
+  }
+
+  private String md5FromUsernames(User invitee, User invited) throws NoSuchAlgorithmException {
+    List<String> sortedNames = Arrays.asList(invitee.getUserName(), invited.getUserName());
+    Collections.sort(sortedNames);
+    byte[] hash = MessageDigest.getInstance("MD5").digest(String.join("_", sortedNames).getBytes());
+    StringBuilder sb = new StringBuilder(2*hash.length);
+    for(byte b : hash) {
+      sb.append(String.format("%02x", b&0xff));
+    }
+    return sb.toString();
   }
 }

@@ -79,25 +79,4 @@ public class UserControllerTest {
                         .content("{\"email\":\"foo@bar.org\"}"))
                 .andExpect(status().isUnprocessableEntity());
     }
-
-    @Test
-    public void testGetUserRooms() throws Exception {
-        List<String> rooms = Arrays.asList("lobby", "beer");
-        when(userService.findByUserName("foo")).thenReturn(
-                new User().setUserName("foo").setRooms(rooms)
-        );
-
-        server.perform(get("/users/foo/rooms"))
-                .andExpect(content().json("[\"lobby\", \"beer\"]"));
-    }
-
-    @Test
-    public void testGetUserRoomsIfHasNoRooms() throws Exception {
-        when(userService.findByUserName("noRoomsGuy")).thenReturn(
-                new User().setUserName("noRoomsGuy")
-        );
-
-        server.perform(get("/users/noRoomsGuy/rooms"))
-                .andExpect(content().json("[]"));
-    }
 }
