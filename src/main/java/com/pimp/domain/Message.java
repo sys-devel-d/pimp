@@ -47,24 +47,27 @@ public class Message implements Serializable, IKeyedObject {
         this.key = key;
     }
 
-    public void setMessage(String message) {
+    public Message setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public Message setUserName(String userName) {
         this.userName = userName;
+        return this;
     }
 
     public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(String roomId) {
+    public Message setRoomId(String roomId) {
         this.roomId = roomId;
+        return this;
     }
 
     public Instant getCreationDate() {
