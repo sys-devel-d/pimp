@@ -7,8 +7,10 @@ import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
+@RunWith(MockitoJUnitRunner.class)
 public class RoomControllerTest {
 
     private MockMvc server;
@@ -42,7 +45,7 @@ public class RoomControllerTest {
 
     // Hmm why is chatRoomService null? Doesn't get mocked.
 
-    /*@Test
+    @Test
     public void testGetUserRoomsIfHasNoRooms() throws Exception {
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -52,7 +55,7 @@ public class RoomControllerTest {
 
         when(chatRoomService.findUsersRooms(any())).thenReturn(new ArrayList<>());
 
-        server.perform(get("/rooms"))
+        server.perform(get("/rooms/"))
                 .andExpect(content().json("[]"));
     }
 
@@ -60,6 +63,9 @@ public class RoomControllerTest {
     public void testGetUserRooms() throws Exception {
         User user1 = new User().setUserName("foo");
         User user2 = new User().setUserName("bar");
+        String expectedResponse = "[{\"roomName\": \"general\", \"roomType\": \"PRIVATE\", " +
+                "\"participants\": [{\"userName\": \"foo\"}, {\"userName\": \"bar\"}], " +
+                "\"messages\": [{\"message\": \"Hi bar\", \"userName\": \"foo\", \"roomId\": \"general\"}]}]";
 
         Message message = new Message()
                 .setMessage("Hi bar")
@@ -68,6 +74,7 @@ public class RoomControllerTest {
 
         ChatRoom chatRoom = new ChatRoom()
                 .setRoomName("general")
+                .setRoomType(ChatRoom.ROOM_TYPE_PRIVATE)
                 .setParticipants(Arrays.asList(user1, user2))
                 .setMessages(Arrays.asList(message));
 
@@ -80,8 +87,9 @@ public class RoomControllerTest {
         when(chatRoomService.findUsersRooms(any())).thenReturn(Arrays.asList(chatRoom));
 
         server.perform(get("/rooms/"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(content().json(expectedResponse));
 
-    }*/
+    }
 
 }
