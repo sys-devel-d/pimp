@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RoomControllerTest {
+public class RoomControllerTest extends ControllerTest {
 
     private MockMvc server;
 
@@ -45,14 +45,7 @@ public class RoomControllerTest {
 
     @Test
     public void testGetUserRoomsIfHasNoRooms() throws Exception {
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(authentication.getPrincipal()).thenReturn(null);
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-
         when(chatRoomService.findUsersRooms(any())).thenReturn(new ArrayList<>());
-
         server.perform(get("/rooms/"))
                 .andExpect(content().json("[]"));
     }
@@ -75,12 +68,6 @@ public class RoomControllerTest {
                 .setRoomType(ChatRoom.ROOM_TYPE_PRIVATE)
                 .setParticipants(Arrays.asList(user1, user2))
                 .setMessages(Arrays.asList(message));
-
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(authentication.getPrincipal()).thenReturn(new User().setUserName("bolz"));
-        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
 
         when(chatRoomService.findUsersRooms(any())).thenReturn(Arrays.asList(chatRoom));
 
