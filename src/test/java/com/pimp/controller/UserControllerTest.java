@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +61,8 @@ public class UserControllerTest {
 
     @Test
     public void testMissingUserParam() throws Exception {
-        server.perform(get("/users")).andExpect(status().isMethodNotAllowed());
+        when(userService.findAll()).thenReturn(new ArrayList<User>());
+        server.perform(get("/users")).andExpect(content().json("[]"));
     }
 
     @Test
