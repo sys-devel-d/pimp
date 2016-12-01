@@ -4,6 +4,7 @@ import com.pimp.domain.ChatRoom;
 import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
@@ -82,6 +84,22 @@ public class RoomController {
         List<ChatRoom> rooms = chatRoomService.findUsersRooms(user);
         if(rooms == null) return new ArrayList<>();
         return rooms;
+    }
+
+    @PreAuthorize("#oauth2.hasScope('user_actions')")
+    @RequestMapping(method = PATCH, path = "/edit/")
+    public ResponseEntity<ChatRoom> editChatRoom(@RequestBody ChatRoom chatRoom) {
+        // Right now only group chats can be edited. You can only exit private chats.
+        if(chatRoom == null || chatRoom.getRoomType().equals(ChatRoom.ROOM_TYPE_PRIVATE)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        ChatRoom roomToEdit = chatRoomService.findByRoomName(chatRoom.getRoomName());
+        // Only displayNames and participants can be edited.
+        roomToEdit
+                .setDisplayNames(chatRoom.getDisplayNames())
+                .setParticipants(chatRoom.getParticipants());
+        chatRoomService.save(roomToEdit);
+        return ResponseEntity.ok(roomToEdit);
     }
 
 }
