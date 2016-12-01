@@ -43,8 +43,6 @@ public class RoomControllerTest {
                 .build();
     }
 
-    // Hmm why is chatRoomService null? Doesn't get mocked.
-
     @Test
     public void testGetUserRoomsIfHasNoRooms() throws Exception {
         Authentication authentication = mock(Authentication.class);
