@@ -45,7 +45,8 @@ public class UserController {
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET)
   public List<User> getAllUsers() {
-    return userService.findAll();
+    User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return withoutCurrentUser(userService.findAll(), currentUser);
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
@@ -57,9 +58,17 @@ public class UserController {
     User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     List<User> foundUsers = userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
 
-    return foundUsers.stream()
+    return withoutCurrentUser(foundUsers, loggedInUser);
+  }
+
+  /*
+    Helper
+   */
+
+  private List<User> withoutCurrentUser(List<User> users, User currentUser) {
+    return users.stream()
             .filter(
-              user -> !user.getUserName().equals(loggedInUser.getUserName())
+                    user -> !user.getUserName().equals(currentUser.getUserName())
             ).collect(Collectors.toList());
   }
 }
