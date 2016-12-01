@@ -43,6 +43,12 @@ public class UserController {
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = GET)
+  public List<User> getAllUsers() {
+    return userService.findAll();
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/search/{query}")
   public List<User> searchUser(@PathVariable String query) {
     if (query.length() < 3) {
