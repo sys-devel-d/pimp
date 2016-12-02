@@ -87,6 +87,16 @@ public class RoomController {
     }
 
     @PreAuthorize("#oauth2.hasScope('user_actions')")
+    @RequestMapping(method = PATCH, path = "/exit/{roomName}")
+    public ResponseEntity<?> exitRoom(@PathVariable String roomName) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        ChatRoom room = chatRoomService.findByRoomName(roomName);
+        room.getParticipants().remove(user);
+        chatRoomService.save(room);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+
+    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = PATCH, path = "/edit/")
     public ResponseEntity<ChatRoom> editChatRoom(@RequestBody ChatRoom chatRoom) {
         // Right now only group chats can be edited. You can only exit private chats.

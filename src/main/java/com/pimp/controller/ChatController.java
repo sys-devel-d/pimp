@@ -38,9 +38,6 @@ public class ChatController {
     Instant creationDate = Instant.now();
     message.setCreationDate(creationDate);
     message.setKey(new ObjectId().toString());
-    /* Here we can be sure that the room exists as it must have been
-     * created in `this.handleSubscription()` if it hadn't previously existed
-     */
     ChatRoom chatRoom = chatRoomService.findByRoomName(message.getRoomId());
     chatRoom.addMessage(message);
     chatRoomService.save(chatRoom);
