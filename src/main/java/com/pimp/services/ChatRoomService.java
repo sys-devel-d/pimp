@@ -6,6 +6,7 @@ import com.pimp.domain.ChatRoom;
 import com.pimp.domain.ChatRoomDocument;
 import com.pimp.domain.User;
 import com.pimp.repositories.ChatRoomRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,8 +16,7 @@ import org.springframework.stereotype.Service;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,16 +88,23 @@ public class ChatRoomService {
     return mongoOperations.find(mongoQuery, ChatRoomDocument.class).stream().map(ChatRoom::from).collect(Collectors.toList());
   }
 
-  public ChatRoom initUniqueRoom(User invitee, User invited, String roomType) throws NoSuchAlgorithmException {
-    String uniqueRoomName = md5FromUsernames(invitee, invited);
+  public ChatRoom initializeRoom(List<User> users, String roomType, HashMap<String, String> displayNames) throws NoSuchAlgorithmException {
+    String roomName;
+    if(roomType.equals(ChatRoom.ROOM_TYPE_PRIVATE)) {
+      roomName = md5FromUsernames(users);
+    }
+    else {
+      roomName = ObjectId.get().toString();
+    }
 
-    if(!existsWithRoomName(uniqueRoomName)) {
+    if(!existsWithRoomName(roomName)) {
       ChatRoomDocument chatRoomDocument = createChatRoom(
               new ChatRoom()
-                .setRoomName(uniqueRoomName)
-                .setParticipants(Arrays.asList(invitee, invited))
-                .setMessages(new ArrayList<>())
-                .setRoomType(roomType)
+                      .setRoomName(roomName)
+                      .setParticipants(users)
+                      .setDisplayNames(displayNames)
+                      .setMessages(new ArrayList<>())
+                      .setRoomType(roomType)
       );
       return ChatRoom.from(chatRoomDocument);
     }
@@ -105,9 +112,8 @@ public class ChatRoomService {
     return null;
   }
 
-  private String md5FromUsernames(User invitee, User invited) throws NoSuchAlgorithmException {
-    List<String> sortedNames = Arrays.asList(invitee.getUserName(), invited.getUserName());
-    Collections.sort(sortedNames);
+  private String md5FromUsernames(List<User> users) throws NoSuchAlgorithmException {
+    List<String> sortedNames = users.stream().map(User::getUserName).sorted().collect(Collectors.toList());
     byte[] hash = MessageDigest.getInstance("MD5").digest(String.join("_", sortedNames).getBytes());
     StringBuilder sb = new StringBuilder(2*hash.length);
     for(byte b : hash) {

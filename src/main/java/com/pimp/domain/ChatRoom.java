@@ -1,35 +1,31 @@
 package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ChatRoom {
 
     @NotEmpty
-    @JsonProperty
     private String roomName;
-    @JsonProperty
     private String roomType;
     private List<Message> messages;
     private List<User> participants;
+    private HashMap<String, String> displayNames;
 
-    // This is just for checking. Is not saved in DB.
-    public static Set<String> ROOM_TYPES = new HashSet<String>(){{
-        add("PRIVATE");
-        add("GROUP");
-    }};
+    public static String ROOM_TYPE_PRIVATE = "PRIVATE";
+    public static String ROOM_TYPE_GROUP = "GROUP";
+    public static String HASH_KEY_GROUP_DISPLAY_NAME = "_GROUP_DISPLAY_NAME_";
 
     public static ChatRoom from(ChatRoomDocument chatRoomDocument) {
         return new ChatRoom()
                 .setRoomName(chatRoomDocument.getRoomName())
                 .setParticipants(chatRoomDocument.getParticipants())
                 .setRoomType(chatRoomDocument.getRoomType())
+                .setDisplayNames(chatRoomDocument.getDisplayNames())
                 .setMessages(chatRoomDocument.getMessages());
 
     }
@@ -77,6 +73,15 @@ public class ChatRoom {
 
     public ChatRoom setRoomType(String roomType) {
         this.roomType = roomType;
+        return this;
+    }
+
+    public HashMap<String, String> getDisplayNames() {
+        return displayNames;
+    }
+
+    public ChatRoom setDisplayNames(HashMap<String, String> displayNames) {
+        this.displayNames = displayNames;
         return this;
     }
 }

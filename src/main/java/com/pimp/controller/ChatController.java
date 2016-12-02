@@ -2,19 +2,14 @@ package com.pimp.controller;
 
 import com.pimp.domain.ChatRoom;
 import com.pimp.domain.Message;
-import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
-import com.pimp.services.UserService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
-import java.util.List;
 
 /**
  * The ChatController handles i/o socket communication,
@@ -27,24 +22,10 @@ import java.util.List;
 public class ChatController {
 
   private ChatRoomService chatRoomService;
-  private UserService userService;
 
   @Autowired
-  public ChatController(ChatRoomService chatRoomService, UserService userService) {
+  public ChatController(ChatRoomService chatRoomService) {
     this.chatRoomService = chatRoomService;
-    this.userService = userService;
-  }
-
-  /**
-   * This is only invoked when the client joins the room (subscribes).
-   * On the client this is exposed as `/app/initial-messages/{room}`
-   */
-  @SubscribeMapping("/initial-messages/{room}/{user}")
-  // TODO: Get user by token and remove destination variable
-  public List<Message> sendInitialMessages(
-          @DestinationVariable("room") String roomName,
-          @DestinationVariable("user") String userName) {
-    return handleSubscription(userName, roomName);
   }
 
   @MessageMapping("/broker/{room}")
@@ -66,13 +47,4 @@ public class ChatController {
     return message;
   }
 
-  private List<Message> handleSubscription(String userName, String roomName) {
-    User user = userService.findByUserName(userName);
-    ChatRoom chatRoom = chatRoomService.getExistingOrCreate(roomName);
-    if(chatRoom.getParticipants().contains(user)) {
-      chatRoom.addParticipant(user);
-      chatRoomService.save(chatRoom);
-    }
-    return chatRoom.getMessages();
-  }
 }

@@ -68,6 +68,10 @@ public class UserService {
     return User.from(userDocument);
   }
 
+  public List<User> findAll() {
+    return userRepository.findAll().stream().map(User::from).collect(Collectors.toList());
+  }
+
   public void save(User user) {
     userRepository.save(UserDocument.from(user));
   }

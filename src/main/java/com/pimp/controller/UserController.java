@@ -4,6 +4,7 @@ import com.pimp.domain.User;
 import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -41,12 +43,32 @@ public class UserController {
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = GET)
+  public List<User> getAllUsers() {
+    User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return withoutCurrentUser(userService.findAll(), currentUser);
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/search/{query}")
   public List<User> searchUser(@PathVariable String query) {
     if (query.length() < 3) {
       throw new IllegalArgumentException("Search string should have a length >= 3.");
     }
+    User loggedInUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    List<User> foundUsers = userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
 
-    return userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
+    return withoutCurrentUser(foundUsers, loggedInUser);
+  }
+
+  /*
+    Helper
+   */
+
+  private List<User> withoutCurrentUser(List<User> users, User currentUser) {
+    return users.stream()
+            .filter(
+                    user -> !user.getUserName().equals(currentUser.getUserName())
+            ).collect(Collectors.toList());
   }
 }

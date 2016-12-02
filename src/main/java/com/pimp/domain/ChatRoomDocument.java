@@ -3,6 +3,7 @@ package com.pimp.domain;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Document
@@ -13,11 +14,13 @@ public class ChatRoomDocument {
   private String roomType;
   private List<Message> messages;
   private List<User> participants;
+  private HashMap<String, String> displayNames;
 
   public static ChatRoomDocument from(ChatRoom chatRoom) {
     return new ChatRoomDocument()
             .setRoomName(chatRoom.getRoomName())
             .setRoomType(chatRoom.getRoomType())
+            .setDisplayNames(chatRoom.getDisplayNames())
             .setParticipants(chatRoom.getParticipants())
             .setMessages(chatRoom.getMessages());
   }
@@ -55,6 +58,15 @@ public class ChatRoomDocument {
 
   public ChatRoomDocument setRoomType(String roomType) {
     this.roomType = roomType;
+    return this;
+  }
+
+  public HashMap<String, String> getDisplayNames() {
+    return displayNames;
+  }
+
+  public ChatRoomDocument setDisplayNames(HashMap<String, String> displayNames) {
+    this.displayNames = displayNames;
     return this;
   }
 }
