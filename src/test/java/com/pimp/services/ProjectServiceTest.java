@@ -39,7 +39,7 @@ public class ProjectServiceTest {
 
         service.createProject(project);
 
-        verify(repository, only()).save(new ProjectDocument().from(project));
+        verify(repository, atLeastOnce()).save(new ProjectDocument().from(project));
     }
 
     @Test(expected = EntityNotFoundException.class)

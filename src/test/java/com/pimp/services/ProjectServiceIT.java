@@ -14,7 +14,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {PimpRestApplication.class, MongoConfig.class, ProjectService.class, ProjectRepository.class})
+@SpringBootTest(classes = {PimpRestApplication.class, MongoConfig.class, ProjectService.class, ProjectRepository.class},
+        properties = "db.port=37017")
 public class ProjectServiceIT {
 
     @Autowired
