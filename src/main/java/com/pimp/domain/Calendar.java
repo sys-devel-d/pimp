@@ -2,6 +2,7 @@ package com.pimp.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -77,5 +78,17 @@ public class Calendar implements IKeyedObject {
 
   public void setPrivate(boolean aPrivate) {
     isPrivate = aPrivate;
+  }
+
+  public Event getEventByKey(String eventKey) {
+    Optional<Event> firstEvent = getEvents()
+      .stream()
+      .filter(event -> event.getKey().equals(eventKey))
+      .findFirst();
+    return firstEvent.isPresent() ? firstEvent.get() : null;
+  }
+
+  public boolean containsEvent(String eventKey) {
+    return getEventByKey(eventKey) != null;
   }
 }

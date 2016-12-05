@@ -21,6 +21,7 @@ public class Event implements IKeyedObject {
   @JsonProperty
   private String key = new ObjectId().toString();
   @JsonProperty
+  private String calendarKey;
   @NotNull
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
   private Date start;
@@ -87,5 +88,13 @@ public class Event implements IKeyedObject {
 
   public void setParticipants(List<String> participants) {
     this.participants = participants;
+  }
+
+  public String getCalendarKey() {
+    return calendarKey;
+  }
+
+  public void setCalendarKey(String calendarKey) {
+    this.calendarKey = calendarKey;
   }
 }

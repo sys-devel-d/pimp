@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
 import com.pimp.commons.exceptions.EntityValidationException;
@@ -17,6 +18,8 @@ import com.pimp.repositories.CalendarRepository;
 public class CalendarService {
 
   private CalendarRepository calendarRepository;
+  @Autowired
+  private MongoOperations mongoOperations;
 
   @Autowired
   public CalendarService(CalendarRepository calendarRepository) {
@@ -45,13 +48,6 @@ public class CalendarService {
 
   public Calendar getCalendarByKey(String key) {
     return calendarRepository.findOne(key);
-  }
-
-  public List<String> getCalendarList() {
-    return calendarRepository
-      .findAll()
-      .stream()
-      .map(Calendar::getKey).collect(Collectors.toList());
   }
 
 }
