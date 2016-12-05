@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 ;
@@ -15,7 +17,10 @@ public class PimpRestApplication {
   @Bean
   @Primary
   public ObjectMapper objectMapper() {
-    return new ObjectMapper().findAndRegisterModules();
+    ObjectMapper objectmapper = new ObjectMapper().findAndRegisterModules();
+    objectmapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+    objectmapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    return objectmapper;
   }
 
   public static void main(String[] args) {
