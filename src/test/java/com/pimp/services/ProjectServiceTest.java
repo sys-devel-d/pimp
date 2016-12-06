@@ -37,7 +37,7 @@ public class ProjectServiceTest {
 
         Project project = new Project().setName("FooProject").setUserNames(Arrays.asList("Foo", "Bar"));
 
-        service.createProject(project);
+        service.create(project);
 
         verify(repository, atLeastOnce()).save(new ProjectDocument().from(project));
     }

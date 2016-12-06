@@ -21,7 +21,7 @@ public class ProjectService {
         this.repository = repository;
     }
 
-    public void createProject(Project project) {
+1^    public void create(Project project) {
         if (repository.findByName(project.getName()) != null) {
             throw new EntityAlreadyExistsException("Project with name " + project.getName() + " already exists.");
         }
