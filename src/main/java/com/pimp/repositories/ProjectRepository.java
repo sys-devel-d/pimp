@@ -12,6 +12,6 @@ public interface ProjectRepository extends MongoRepository<ProjectDocument, Stri
 
     public ProjectDocument save(ProjectDocument document);
 
-    @Query("{userNames:{$elemMatch:{$eq: 'userName'}}}")
+    @Query("{userNames:{$elemMatch:{$eq: ?0}}}")
     public List<ProjectDocument> findByUserName(String userName);
 }
