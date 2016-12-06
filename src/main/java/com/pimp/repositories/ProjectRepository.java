@@ -14,4 +14,6 @@ public interface ProjectRepository extends MongoRepository<ProjectDocument, Stri
 
     @Query("{userNames:{$elemMatch:{$eq: ?0}}}")
     public List<ProjectDocument> findByUserName(String userName);
+
+    public void delete(String name);
 }
