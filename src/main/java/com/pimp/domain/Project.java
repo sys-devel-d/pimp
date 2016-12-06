@@ -2,6 +2,7 @@ package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.List;
 public class Project {
 
     @JsonProperty
+    @NotEmpty
     private String name;
     @JsonProperty
     private List<String> userNames = new LinkedList<>();
