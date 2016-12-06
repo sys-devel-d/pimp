@@ -93,6 +93,11 @@
                 <version>2.19.1</version>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.18</version>
+            </plugin>
+            <plugin>
                 <groupId>com.syncleus.maven.plugins</groupId>
                 <artifactId>maven-mongodb-plugin</artifactId>
                 <version>1.1.1</version>
@@ -104,6 +109,18 @@
                         </goals>
                         <configuration>
                             <port>37017</port>
+                            <imports>
+                                <import>
+                                    <database>pimp</database>
+                                    <collection>clientDocument</collection>
+                                    <file>mongo_dumps/test_exports/clientDocument.json</file>
+                                </import>
+                                <import>
+                                    <database>pimp</database>
+                                    <collection>userDocument</collection>
+                                    <file>mongo_dumps/test_exports/userDocument.json</file>
+                                </import>
+                            </imports>
                         </configuration>
                     </execution>
                     <execution>
