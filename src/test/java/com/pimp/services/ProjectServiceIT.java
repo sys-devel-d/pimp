@@ -34,14 +34,14 @@ public class ProjectServiceIT {
     public void testDuplicate() throws Exception {
         Project project = new Project().setName("FooProject").setUserNames(Arrays.asList("Foo", "Bar"));
 
-        service.createProject(project);
-        service.createProject(project);
+        service.create(project);
+        service.create(project);
     }
 
     @Test
     public void testFindProject() throws Exception {
         Project project = new Project().setName("FooProject").setUserNames(Arrays.asList("Foo", "Bar"));
-        service.createProject(project);
+        service.create(project);
 
         Project queriedProject = service.find("FooProject");
 
@@ -53,8 +53,8 @@ public class ProjectServiceIT {
     public void testFindByUsername() throws Exception {
         Project projectA = new Project().setName("ProjectA").setUserNames(Arrays.asList("PatrickBateman", "PaulAllen"));
         Project projectB = new Project().setName("ProjectB").setUserNames(Arrays.asList("PaulAllen", "Peterson"));
-        service.createProject(projectA);
-        service.createProject(projectB);
+        service.create(projectA);
+        service.create(projectB);
 
         List<Project> projectList = service.findByUserName("PaulAllen");
 
@@ -67,7 +67,7 @@ public class ProjectServiceIT {
 
         assertAbsent("Project");
 
-        service.createProject(project);
+        service.create(project);
         service.delete("Project");
 
         assertAbsent("Project");
