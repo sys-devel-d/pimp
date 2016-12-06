@@ -81,4 +81,11 @@ public class ProjectServiceTest {
                         .setName("BarProject")
                         .setUserNames(Arrays.asList("foo")));
     }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void testDeleteNonExisting() throws Exception {
+        when(repository.findByName(any())).thenReturn(null);
+
+        service.delete("foo");
+    }
 }
