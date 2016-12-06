@@ -2,6 +2,7 @@ package com.pimp.services;
 
 import com.pimp.PimpRestApplication;
 import com.pimp.commons.exceptions.EntityAlreadyExistsException;
+import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.config.MongoConfig;
 import com.pimp.domain.Project;
 import com.pimp.repositories.ProjectRepository;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.fail;
 
 /*
  * This suite should only be run with maven verify, to avoid messing up your db,
@@ -57,5 +59,26 @@ public class ProjectServiceIT {
         List<Project> projectList = service.findByUserName("PaulAllen");
 
         assertThat(projectList).hasSize(2);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        Project project = new Project().setName("Project").setUserNames(Arrays.asList("Foo", "Bar"));
+
+        assertAbsent("Project");
+
+        service.createProject(project);
+        service.delete("Project");
+
+        assertAbsent("Project");
+    }
+
+    private void assertAbsent(String name) {
+        try {
+            service.find(name);
+            fail("FooProject was found, but should not exist.");
+        } catch (EntityNotFoundException e) {
+            // ok
+        }
     }
 }

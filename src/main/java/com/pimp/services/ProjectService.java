@@ -49,4 +49,12 @@ public class ProjectService {
 
         return documents.stream().map(Project::from).collect(Collectors.toList());
     }
+
+    public void delete(String name) {
+        if (repository.findByName(name) == null) {
+            throw new EntityNotFoundException("Project " + name + " cannot be deleted, since it does not exist.");
+        }
+
+        repository.delete(name);
+    }
 }
