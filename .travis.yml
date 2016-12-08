@@ -1,13 +1,15 @@
 language: java
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 services:
-  - mongodb
-
+- mongodb
 before_script:
-  - sleep 15
+- sleep 15
+install: "./restore_db.sh"
 
-install: ./restore_db.sh
+deploy:
+  provider: heroku
+  api_key:
+    secure: ojFsedyAqGf/pnegnZLNsqZI3lieiIhnkhbWuVlPLUAJIAAXSUOwCtCv6/AcSUB7aq3orOzv5lltkMb19lXMCVIENLVF+AJsHSaQ587bcBoFzxnT2g8oPw3aQfJ0euuFapY59CQUZZFNlvI9vq2Ng5HIElSrBWmfoPDlXEuI7jKa5+KIEQIiOcO0DVL3nGCxHvkM9ninU5NGzlC2pwFw6jnQd7mrxkVDU8gHAxJN8EUm/uXDR2uX5liNADRajaENGHZCNUXT7gUtEQmT7IUWEdpyb9QqmH7CLhD3StUG9GEx8/Wqg51u2ppwWLFX4XEwL59dVN1ihHzX2MTJR+n88qg3sq5yvVjBMKwNTDU5H4DodJx16PSnyqZd9Th7ilKSOIqV1n9XHKp4Gh0RRUmutpAV9DtscJmV6DbhCP8SAGyWSTWfcyAcaHz3NkkCwRPU7ZfitxMWpNisGKjaWa285LcRI3x5/hbHI7LdCDJgFTLyDE2o3bz80NwhZRB2QoVy9WhIM4xkY3nyHjJ4w0OJDMbKIviNIZ1dscxwCBOeUnGObj2RpqXmV10Fd0H8o0E+MahVufZQxByFDrCSrV9r86CC6fnW0VWF894lgc60ePxNYGz0JOjP4/IKS8rSSjSHY/mLM0/3d/2I/Ukl394y23GTMKc6964ejPpvenN8Nd0=
+  app: pimp-backend
 
