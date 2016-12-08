@@ -45,7 +45,7 @@ public class MongoConfig extends AbstractMongoConfiguration{
     protected String getDatabaseName() {
         if (0 != "none".compareTo(dbUri)) {
             int startOfDbName = dbUri.lastIndexOf("/");
-            this.dbName = dbUri.substring(startOfDbName);
+            this.dbName = dbUri.substring(startOfDbName + 1);
         }
         return dbName;
     }
