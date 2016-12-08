@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @EnableMongoRepositories(basePackages = {"com.pimp.repositories"})
 public class MongoConfig extends AbstractMongoConfiguration{
 
-    @Value("${db.uri:none}")
+    @Value("${db.uri}")
     private String dbUri;
 
     @Value(("${db.host}"))
