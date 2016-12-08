@@ -2,6 +2,8 @@ package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,6 +32,10 @@ public class User implements UserDetails {
     @Size(min = 8, max = 255)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    @Size(max = 255)
+    @JsonProperty()
+    private ObjectId photo;
+
     private List<String> roles;
 
     public static User from(UserDocument userDocument) {
@@ -39,6 +45,7 @@ public class User implements UserDetails {
                 .setFirstName(userDocument.getFirstName())
                 .setLastName(userDocument.getLastName())
                 .setRoles(userDocument.getRoles())
+                .setPhoto(userDocument.getPhoto())
                 .setPassword(userDocument.getPassword());
     }
 
@@ -100,6 +107,15 @@ public class User implements UserDetails {
 
     public User setRoles(List<String> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    public ObjectId getPhoto() {
+        return photo;
+    }
+
+    public User setPhoto(ObjectId photo) {
+        this.photo = photo;
         return this;
     }
 

@@ -2,20 +2,30 @@ package com.pimp.services;
 
 import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.commons.mongo.MongoFileStorage;
 import com.pimp.domain.User;
 import com.pimp.domain.UserDocument;
 import com.pimp.repositories.UserRepository;
+
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.imageio.ImageIO;
 
 @Service
 public class UserService {
@@ -23,6 +33,9 @@ public class UserService {
   private UserRepository userRepository;
   @Autowired
   private MongoOperations mongoOperations;
+  @Autowired
+  private MongoFileStorage fileStorage;
+
   private BCryptPasswordEncoder encoder;
 
   @Autowired
@@ -86,5 +99,23 @@ public class UserService {
     mongoQuery.addCriteria(criteria);
     return mongoOperations.find(mongoQuery, UserDocument.class)
             .stream().map(User::from).collect(Collectors.toList());
+  }
+
+  public void uploadPhoto(String userKey, MultipartFile file) throws IOException {
+    ObjectId objectId = new ObjectId();
+    fileStorage.write(objectId.toString(), file.getInputStream());
+
+    User user = this.findByUserName(userKey);
+    user.setPhoto(objectId);
+
+    this.save(user);
+  }
+
+  public byte[] findPhotoByName(String name) throws IOException {
+    InputStream inputStream = fileStorage.read(name);
+    BufferedImage bufferedImage = ImageIO.read(inputStream);
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+    return byteArrayOutputStream.toByteArray();
   }
 }
