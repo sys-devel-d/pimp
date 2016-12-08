@@ -2,6 +2,7 @@ package com.pimp.config;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.pimp.commons.mongo.MongoFileStorage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @Configuration
 @EnableMongoRepositories(basePackages = {"com.pimp.repositories"})
 public class MongoConfig extends AbstractMongoConfiguration{
+
+    @Value("${db.uri}")
+    private String dbUri;
 
     @Value(("${db.host}"))
     private String dbHost;
@@ -39,11 +43,22 @@ public class MongoConfig extends AbstractMongoConfiguration{
 
     @Override
     protected String getDatabaseName() {
+        if (0 != "none".compareTo(dbUri)) {
+            int startOfDbName = dbUri.lastIndexOf("/");
+            this.dbName = dbUri.substring(startOfDbName + 1);
+        }
         return dbName;
     }
 
     @Override
     public Mongo mongo() throws Exception {
-        return new MongoClient(dbHost);
+        MongoClient mongoClient;
+        if ("none".compareTo(dbUri) != 0) {
+            MongoClientURI uri = new MongoClientURI(dbUri);
+            mongoClient = new MongoClient(uri);
+        } else {
+            mongoClient = new MongoClient(dbHost);
+        }
+        return mongoClient;
     }
 }
