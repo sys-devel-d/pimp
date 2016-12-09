@@ -2,6 +2,7 @@ package com.pimp.controller;
 
 import com.pimp.domain.Project;
 import com.pimp.services.ProjectService;
+import com.pimp.services.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,19 +25,22 @@ public class ProjectControllerTest {
     private MockMvc server;
 
     @Mock
-    private ProjectService service;
+    private ProjectService projectService;
+
+    @Mock
+    private UserService userService;
 
     @Before
     public void setUp() throws Exception {
         server = MockMvcBuilders
-                .standaloneSetup(new ProjectController(service))
+                .standaloneSetup(new ProjectController(projectService, userService))
                 .setControllerAdvice(new RestAdvice())
                 .build();
     }
 
     @Test
     public void testGet() throws Exception {
-        when(service.find("Foo"))
+        when(projectService.find("Foo"))
                 .thenReturn(
                         new Project()
                                 .setName("Foo")
@@ -60,7 +64,7 @@ public class ProjectControllerTest {
         )
                 .andExpect(status().isOk());
 
-        verify(service, only()).create(project);
+        verify(projectService, only()).create(project);
     }
 
     @Test
@@ -85,6 +89,36 @@ public class ProjectControllerTest {
     public void testDelete() throws Exception {
         server.perform(delete("/project/foo")).andExpect(status().isOk());
 
-        verify(service, only()).delete("foo");
+        verify(projectService, only()).delete("foo");
+    }
+
+    @Test
+    public void testAddUser() throws Exception {
+        when(userService.exists("userFoo")).thenReturn(true);
+        server.perform(patch("/project/foo/userFoo"));
+
+        verify(projectService, only()).add("foo", "userFoo");
+    }
+
+    @Test
+    public void testAddNonExistingUser() throws Exception {
+        when(userService.exists("userFoo")).thenReturn(false);
+        server.perform(patch("/project/foo/userFoo"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testRemoveUser() throws Exception {
+        when(userService.exists("userFoo")).thenReturn(true);
+        server.perform(delete("/project/foo/userFoo"));
+
+        verify(projectService, only()).remove("foo", "userFoo");
+    }
+
+    @Test
+    public void testRemoveNonExistingUser() throws Exception {
+        when(userService.exists("userFoo")).thenReturn(false);
+        server.perform(delete("/project/foo/userFoo"))
+                .andExpect(status().isNotFound());
     }
 }
