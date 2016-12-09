@@ -27,6 +27,8 @@ public class User implements UserDetails {
     @Size(max = 255)
     @JsonProperty()
     private String lastName;
+    @Size(max = 1024)
+    private String status;
     @Size(min = 8, max = 255)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -38,6 +40,7 @@ public class User implements UserDetails {
                 .setUserName(userDocument.getUserName())
                 .setFirstName(userDocument.getFirstName())
                 .setLastName(userDocument.getLastName())
+                .setStatus(userDocument.getStatus())
                 .setRoles(userDocument.getRoles())
                 .setPassword(userDocument.getPassword());
     }
@@ -151,5 +154,14 @@ public class User implements UserDetails {
     @Override
     public int hashCode() {
         return email.hashCode();
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public User setStatus(String status) {
+        this.status = status;
+        return this;
     }
 }
