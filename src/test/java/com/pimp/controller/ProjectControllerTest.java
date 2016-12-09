@@ -54,6 +54,8 @@ public class ProjectControllerTest {
 
     @Test
     public void testCreate() throws Exception {
+        when(userService.exists(any())).thenReturn(true);
+
         Project project = new Project()
                 .setName("Foo")
                 .setUserNames(Arrays.asList("PatrickBateman", "PaulAllen"));
