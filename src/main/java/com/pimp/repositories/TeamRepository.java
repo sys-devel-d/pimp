@@ -1,4 +1,5 @@
 package com.pimp.repositories;
 
-public class TeamRepository {
-}
+import com.pimp.domain.Team;
+
+public interface TeamRepository extends GroupRepository<Team> {}
