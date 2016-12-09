@@ -56,9 +56,9 @@ public class ProjectServiceIT {
         service.create(projectA);
         service.create(projectB);
 
-        List<Project> projectList = service.findByUserName("PaulAllen");
+        List<Project> ProjectList = service.findByUserName("PaulAllen");
 
-        assertThat(projectList).hasSize(2);
+        assertThat(ProjectList).hasSize(2);
     }
 
     @Test
