@@ -1,7 +1,5 @@
 package com.pimp.controller;
 
-import com.pimp.commons.exceptions.ForbiddenException;
-import com.pimp.commons.exceptions.UnauthorizedException;
 import com.pimp.domain.User;
 import com.pimp.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/users")
