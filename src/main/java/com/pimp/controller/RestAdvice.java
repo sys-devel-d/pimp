@@ -70,6 +70,14 @@ public class RestAdvice {
     return JSONError.notFound();
   }
 
+  @ExceptionHandler({EntitiesNotFoundException.class})
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ResponseBody
+  public JSONError notFound(EntitiesNotFoundException e) {
+    log.warn(e.getMessage());
+    return JSONError.notFound(e.getMessage());
+  }
+
   @ExceptionHandler({UnauthorizedException.class})
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   @ResponseBody
