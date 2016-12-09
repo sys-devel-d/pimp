@@ -106,7 +106,7 @@ public class UserService {
     fileStorage.write(objectId.toString(), file.getInputStream());
 
     User user = this.findByUserName(userKey);
-    user.setPhoto(objectId);
+    user.setPhoto(objectId.toString());
 
     this.save(user);
   }

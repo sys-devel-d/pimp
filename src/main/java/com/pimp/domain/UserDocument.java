@@ -17,7 +17,7 @@ public class UserDocument {
     private String email;
     private String firstName;
     private String lastName;
-    private ObjectId photo;
+    private String photo;
     private List<String> roles;
 
     public static UserDocument from(User user) {
@@ -85,11 +85,11 @@ public class UserDocument {
         return this;
     }
 
-    public ObjectId getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public UserDocument setPhoto(ObjectId photo) {
+    public UserDocument setPhoto(String photo) {
         this.photo = photo;
         return this;
     }

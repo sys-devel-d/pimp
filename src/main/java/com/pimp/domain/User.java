@@ -34,7 +34,7 @@ public class User implements UserDetails {
     private String password;
     @Size(max = 255)
     @JsonProperty()
-    private ObjectId photo;
+    private String photo;
 
     private List<String> roles;
 
@@ -110,11 +110,11 @@ public class User implements UserDetails {
         return this;
     }
 
-    public ObjectId getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public User setPhoto(ObjectId photo) {
+    public User setPhoto(String photo) {
         this.photo = photo;
         return this;
     }
