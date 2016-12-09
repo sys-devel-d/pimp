@@ -87,4 +87,8 @@ public class UserService {
     return mongoOperations.find(mongoQuery, UserDocument.class)
             .stream().map(User::from).collect(Collectors.toList());
   }
+
+  public boolean exists(String userName) {
+      return userRepository.exists(userName);
+  }
 }
