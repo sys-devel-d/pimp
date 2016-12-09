@@ -2,7 +2,6 @@ package com.pimp.services;
 
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.Project;
-import com.pimp.domain.ProjectDocument;
 import com.pimp.repositories.ProjectRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,13 +32,13 @@ public class ProjectServiceTest {
 
     @Test
     public void testCreate() throws Exception {
-        when(repository.save(any(ProjectDocument.class))).thenReturn(new ProjectDocument());
+        when(repository.save(any(Project.class))).thenReturn(new Project());
 
         Project project = new Project().setName("FooProject").setUserNames(Arrays.asList("Foo", "Bar"));
 
         service.create(project);
 
-        verify(repository, atLeastOnce()).save(new ProjectDocument().from(project));
+        verify(repository, atLeastOnce()).save(project);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -51,7 +50,7 @@ public class ProjectServiceTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void testUserNotInProject() throws Exception {
-        when(repository.findByUserName(any())).thenReturn(new LinkedList<ProjectDocument>());
+        when(repository.findByUserName(any())).thenReturn(new LinkedList<Project>());
 
         service.findByUserName("someone");
     }
@@ -60,10 +59,10 @@ public class ProjectServiceTest {
     public void testFindByUserName() throws Exception {
         when(repository.findByUserName("foo"))
                 .thenReturn(Arrays.asList(
-                        new ProjectDocument()
+                        new Project()
                                 .setName("FooProject")
                                 .setUserNames(Arrays.asList("foo")),
-                        new ProjectDocument()
+                        new Project()
                                 .setName("BarProject")
                                 .setUserNames(Arrays.asList("foo"))
                         )

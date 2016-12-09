@@ -24,7 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.fail;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PimpRestApplication.class, MongoConfig.class, ProjectService.class, ProjectRepository.class},
-        properties = "db.port=37017")
+        properties = {"db.port=37017", "banner."})
 public class ProjectServiceIT {
 
     @Autowired
@@ -71,6 +71,32 @@ public class ProjectServiceIT {
         service.delete("Project");
 
         assertAbsent("Project");
+    }
+
+    @Test
+    public void testAdd() throws Exception {
+        Project project = new Project().setName("UnderstaffedProject");
+
+        service.create(project);
+        service.add(project.getName(), "NewUser");
+
+        Project foundProject = service.find(project.getName());
+
+        assertThat(foundProject.getUserNames()).contains("NewUser");
+        assertThat(project.getKey()).isEqualTo(foundProject.getKey());
+    }
+
+    @Test
+    public void testRemove() throws Exception {
+        Project project = new Project().setName("OverstaffedProject").add("OldUser");
+
+        service.create(project);
+        service.remove(project.getName(), "OldUser");
+
+        Project foundProject = service.find(project.getName());
+
+        assertThat(foundProject.getUserNames()).doesNotContain("OldUser");
+        assertThat(project.getKey()).isEqualTo(foundProject.getKey());
     }
 
     private void assertAbsent(String name) {
