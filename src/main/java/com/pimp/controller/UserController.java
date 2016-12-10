@@ -2,7 +2,6 @@ package com.pimp.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -67,14 +66,26 @@ public class UserController {
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = POST, path = "/{userName}/photo")
+  public String addPhotoToUser(@PathVariable String userName, @RequestBody String file) {
+    try {
+      String photoKey = userService.uploadPhoto(userName, file);
+      return userService.findPhotoByName(photoKey);
+    }
+    catch (IOException e) {
+      throw new IllegalArgumentException("There is was a problem uploading a photo for User " + userName, e);
+    }
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/{userName}/photo/{photoKey}")
   @ResponseBody
   public String getUserPhoto(@PathVariable String userName, @PathVariable String photoKey) {
     try {
-      return Base64.getEncoder().encodeToString(userService.findPhotoByName(photoKey));
+      return userService.findPhotoByName(photoKey);
     }
     catch (IOException e) {
-      throw new IllegalArgumentException("There is no photo for User " + userName);
+      throw new IllegalArgumentException("There is no photo for User " + userName, e);
     }
   }
 
