@@ -29,7 +29,6 @@ public class MongoFileStorage extends PimpSpringBean implements IFileStorage {
   }
 
   public void write(String name, InputStream contentStream) {
-    this.gridOperations.delete(this.getFilenameQuery(name));
     this.gridOperations.store(contentStream, name);
   }
 
