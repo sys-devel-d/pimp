@@ -8,6 +8,7 @@ import com.pimp.domain.UserDocument;
 import com.pimp.repositories.UserRepository;
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
@@ -15,17 +16,14 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 @Service
 public class UserService {
@@ -101,21 +99,27 @@ public class UserService {
             .stream().map(User::from).collect(Collectors.toList());
   }
 
-  public void uploadPhoto(String userKey, MultipartFile file) throws IOException {
-    ObjectId objectId = new ObjectId();
-    fileStorage.write(objectId.toString(), file.getInputStream());
-
+  public String uploadPhoto(String userKey, String file) throws IOException {
     User user = this.findByUserName(userKey);
+    if (user.getPhoto() != null) {
+      fileStorage.delete(user.getPhoto());
+    }
+
+    ObjectId objectId = new ObjectId();
+    InputStream is = new ByteArrayInputStream(file.getBytes());
+    fileStorage.write(objectId.toString(), is);
+
     user.setPhoto(objectId.toString());
 
     this.save(user);
+
+    return objectId.toString();
   }
 
-  public byte[] findPhotoByName(String name) throws IOException {
+  public String findPhotoByName(String name) throws IOException {
     InputStream inputStream = fileStorage.read(name);
-    BufferedImage bufferedImage = ImageIO.read(inputStream);
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-    return byteArrayOutputStream.toByteArray();
+    IOUtils.copy(inputStream, byteArrayOutputStream);
+    return String.valueOf(byteArrayOutputStream);
   }
 }
