@@ -1,6 +1,5 @@
 package com.pimp.domain;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +17,7 @@ public class UserDocument {
     private String firstName;
     private String lastName;
     private String photo;
+    private String status;
     private List<String> roles;
 
     public static UserDocument from(User user) {
@@ -26,6 +26,7 @@ public class UserDocument {
                 .setUserName(user.getUserName())
                 .setFirstName(user.getFirstName())
                 .setLastName(user.getLastName())
+                .setStatus(user.getStatus())
                 .setRoles(user.getRoles())
                 .setPhoto(user.getPhoto())
                 .setPassword(user.getPassword());
@@ -91,6 +92,15 @@ public class UserDocument {
 
     public UserDocument setPhoto(String photo) {
         this.photo = photo;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public UserDocument setStatus(String status) {
+        this.status = status;
         return this;
     }
 }

@@ -2,12 +2,15 @@ package com.pimp.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +23,7 @@ import com.pimp.domain.User;
 import com.pimp.services.UserService;
 
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/users")
@@ -87,6 +89,18 @@ public class UserController {
     catch (IOException e) {
       throw new IllegalArgumentException("There is no photo for User " + userName, e);
     }
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = PUT, path = "/status")
+  public ResponseEntity<String> updateStatus(@RequestBody HashMap<String, String> requestBody) {
+    if(requestBody.containsKey("updatedStatus")) {
+      User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      currentUser.setStatus(requestBody.get("updatedStatus"));
+      userService.save(currentUser);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+    }
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing parameter `updatedStatus`");
   }
 
   /*
