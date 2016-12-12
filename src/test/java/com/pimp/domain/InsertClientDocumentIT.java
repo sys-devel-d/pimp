@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PimpRestApplication.class, MongoConfig.class, CustomClientDetailsService.class, ClientDetailsRepository.class},
-        properties = "db.port=37017")
+        properties = "db.uri=mongodb://localhost:37017/pimp")
 public class InsertClientDocumentIT {
 
     @Autowired

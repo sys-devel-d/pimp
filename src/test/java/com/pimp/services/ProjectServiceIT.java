@@ -24,7 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.fail;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {PimpRestApplication.class, MongoConfig.class, ProjectService.class, ProjectRepository.class},
-        properties = {"db.port=37017", "banner."})
+        properties = {"db.uri=mongodb://localhost:37017/pimp"})
 public class ProjectServiceIT {
 
     @Autowired
