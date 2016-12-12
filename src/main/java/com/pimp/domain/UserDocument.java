@@ -16,6 +16,7 @@ public class UserDocument {
     private String email;
     private String firstName;
     private String lastName;
+    private String photo;
     private String status;
     private List<String> roles;
 
@@ -27,6 +28,7 @@ public class UserDocument {
                 .setLastName(user.getLastName())
                 .setStatus(user.getStatus())
                 .setRoles(user.getRoles())
+                .setPhoto(user.getPhoto())
                 .setPassword(user.getPassword());
     }
 
@@ -81,6 +83,15 @@ public class UserDocument {
 
     public UserDocument setRoles(List<String> roles) {
         this.roles = roles;
+        return this;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public UserDocument setPhoto(String photo) {
+        this.photo = photo;
         return this;
     }
 
