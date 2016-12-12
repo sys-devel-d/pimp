@@ -99,6 +99,10 @@ public class UserService {
             .stream().map(User::from).collect(Collectors.toList());
   }
 
+  public boolean exists(String userName) {
+      return userRepository.exists(userName);
+  }
+
   public String uploadPhoto(String userKey, String file) throws IOException {
     User user = this.findByUserName(userKey);
     if (user.getPhoto() != null) {

@@ -1,0 +1,2 @@
+[{"_id":"angularClient","_class":"com.pimp.domain.ClientDocument","clientSecret":"secret123","resourceIds":["PIMP_RESOURCE"],"scopes":["user_actions"],"grantTypes":["password","refresh_token"],"authorities":["USER"]},
+{"_id":"testClient","_class":"com.pimp.domain.ClientDocument","clientSecret":"secret123","resourceIds":["PIMP_RESOURCE"],"scopes":["user_actions"],"grantTypes":["password","refresh_token"],"authorities":["USER"]}]
