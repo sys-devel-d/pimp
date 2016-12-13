@@ -37,7 +37,7 @@ public class CalendarControllerTest {
                 .build();
         principal = () -> "foo";
     }
-
+    
     @Test
     public void testGetSubscribedCalendars() throws Exception {
 
