@@ -43,17 +43,13 @@ public class CalendarControllerTest {
 
         String expectedResponse = "[{\"title\": \"DevOps\", \"owner\": \"foo\", \"isPrivate\": true, " +
                 "\"events\": [{\"title\": \"Meeting\", \"place\": \"Meeting Room\", \"isPrivate\": true, " +
-                "\"description\": null, \"allDay\": false}]}]";
+                "\"description\": null, \"allDay\": false, \"creator\": \"foo\"}]}]";
 
         Event evt = new Event();
-        evt.setTitle("Meeting");
-        evt.setPrivate(true);
-        evt.setPlace("Meeting Room");
         Calendar cal = new Calendar();
-        cal.setTitle("DevOps");
-        cal.setPrivate(true);
-        cal.setOwner("foo");
-        cal.setEvents(Arrays.asList(evt));
+        evt.setPrivate(true).setPlace("Meeting Room").setCreator("foo").setTitle("Meeting");
+        cal.setTitle("DevOps").setPrivate(true).setOwner("foo").setEvents(Arrays.asList(evt));
+
         Mockito.when(calendarService.getCalendarsByUser(any())).thenReturn(Arrays.asList(cal));
 
         server.perform(get("/calendar/").principal(principal))

@@ -30,6 +30,7 @@ public class Event implements IKeyedObject {
   private String place;
   @Size(max=4096)
   private String description;
+  private String creator;
   @JsonProperty
   private boolean allDay = false;
   @JsonProperty
@@ -69,8 +70,9 @@ public class Event implements IKeyedObject {
     return title;
   }
 
-  public void setTitle(String title) {
+  public Event setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public boolean isAllDay() {
@@ -121,6 +123,15 @@ public class Event implements IKeyedObject {
 
   public Event setPrivate(boolean aPrivate) {
     isPrivate = aPrivate;
+    return this;
+  }
+
+  public String getCreator() {
+    return creator;
+  }
+
+  public Event setCreator(String creator) {
+    this.creator = creator;
     return this;
   }
 }

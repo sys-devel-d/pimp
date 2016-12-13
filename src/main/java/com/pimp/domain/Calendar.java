@@ -39,8 +39,9 @@ public class Calendar implements IKeyedObject {
     return title;
   }
 
-  public void setTitle(String title) {
+  public Calendar setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public List<String> getSubscribers() {
@@ -55,8 +56,9 @@ public class Calendar implements IKeyedObject {
     return events;
   }
 
-  public void setEvents(List<Event> events) {
+  public Calendar setEvents(List<Event> events) {
     this.events = events;
+    return this;
   }
 
   @Override
@@ -73,8 +75,9 @@ public class Calendar implements IKeyedObject {
     return isPrivate;
   }
 
-  public void setPrivate(boolean aPrivate) {
+  public Calendar setPrivate(boolean aPrivate) {
     isPrivate = aPrivate;
+    return this;
   }
 
   public Event getEventByKey(String eventKey) {
