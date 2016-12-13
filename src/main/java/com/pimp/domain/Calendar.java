@@ -23,6 +23,7 @@ public class Calendar implements IKeyedObject {
   @Size(min=2, max=30)
   private String title;
   private String owner;
+  @JsonProperty
   private boolean isPrivate = false;
   private List<String> subscribers = new ArrayList<>();
   private List<Event> events = new ArrayList<>();

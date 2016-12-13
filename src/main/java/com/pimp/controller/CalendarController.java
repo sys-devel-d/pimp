@@ -52,7 +52,7 @@ public class CalendarController {
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET)
   public List<Calendar> getSubscribedCalendars(Principal principal) {
-    return calendarService.getCalendarsByUser(principal.getName());
+    return calendarService.getCalendarsByUser("");
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")

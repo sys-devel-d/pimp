@@ -1,6 +1,7 @@
 package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.pimp.commons.mongo.IKeyedObject;
 import org.bson.types.ObjectId;
 
@@ -29,7 +30,9 @@ public class Event implements IKeyedObject {
   private String place;
   @Size(max=4096)
   private String description;
+  @JsonProperty
   private boolean allDay = false;
+  @JsonProperty
   private boolean isPrivate = false;
   private List<String> participants = new ArrayList<>();
 
