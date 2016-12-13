@@ -4,7 +4,6 @@ import com.pimp.domain.ChatRoom;
 import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.support.Repositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,12 +19,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/rooms")
+@PreAuthorize("#oauth2.hasScope('user_actions')")
 public class RoomController {
 
     private ChatRoomService chatRoomService;
@@ -35,7 +33,6 @@ public class RoomController {
         this.chatRoomService = chatRoomService;
     }
 
-    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = POST, path="/init-private")
     public ResponseEntity<ChatRoom> initPrivateChatRoom(@RequestBody User invited) throws NoSuchAlgorithmException {
 
@@ -56,7 +53,6 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = POST, path="/init-group/{displayName}")
     public ResponseEntity<ChatRoom> initGroupChatRoom(@RequestBody List<User> users, @PathVariable String displayName)
             throws NoSuchAlgorithmException {
@@ -77,7 +73,6 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = GET, path = "/")
     public List<ChatRoom> getUsersRooms() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -86,7 +81,6 @@ public class RoomController {
         return rooms;
     }
 
-    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = PATCH, path = "/exit/{roomName}")
     public ResponseEntity<?> exitRoom(@PathVariable String roomName) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -96,7 +90,6 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 
-    @PreAuthorize("#oauth2.hasScope('user_actions')")
     @RequestMapping(method = PATCH, path = "/edit/")
     public ResponseEntity<ChatRoom> editChatRoom(@RequestBody ChatRoom chatRoom) {
         // Right now only group chats can be edited. You can only exit private chats.
