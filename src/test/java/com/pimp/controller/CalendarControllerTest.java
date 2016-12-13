@@ -36,7 +36,8 @@ public class CalendarControllerTest {
     }
 
     // TODO: inspect the exception thrown and make this work
-    @Ignore
+    //@Ignore
+    @Test
     public void testGetSubscribedCalendars() throws Exception {
         Event evt = new Event();
         Calendar cal = new Calendar();
