@@ -46,6 +46,9 @@ public class CalendarController {
     if (calendar.getSubscribers().isEmpty()) {
       calendar.getSubscribers().add(principal.getName());
     }
+    if(calendar.getOwner() == null) {
+      calendar.setOwner(principal.getName());
+    }
     calendarService.createCalendar(calendar);
   }
 
