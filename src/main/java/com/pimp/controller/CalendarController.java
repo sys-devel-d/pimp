@@ -60,7 +60,7 @@ public class CalendarController {
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST, path = "/{calendarKey}")
-  public void addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
+  public Event addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
       Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
@@ -73,6 +73,7 @@ public class CalendarController {
       }
       calendar.getEvents().add(event);
       calendarService.save(calendar);
+      return event;
     }
   }
 
