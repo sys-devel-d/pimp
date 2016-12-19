@@ -41,7 +41,7 @@ public class CalendarController {
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST)
-  public void createCalendar(@Valid @RequestBody Calendar calendar,
+  public Calendar createCalendar(@Valid @RequestBody Calendar calendar,
       Principal principal) throws EntityValidationException {
     if (calendar.getSubscribers().isEmpty()) {
       calendar.getSubscribers().add(principal.getName());
@@ -49,7 +49,7 @@ public class CalendarController {
     if(calendar.getOwner() == null) {
       calendar.setOwner(principal.getName());
     }
-    calendarService.createCalendar(calendar);
+    return calendarService.createCalendar(calendar);
   }
 
   @PreAuthorize("#oauth2.hasScope('user_actions')")
