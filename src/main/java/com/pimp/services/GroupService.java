@@ -37,13 +37,7 @@ public abstract class GroupService<T extends Group> {
     }
 
     public List<T> findByUserName(String userName) {
-        List<T> groups = repository.findByUserName(userName);
-
-        if (groups.isEmpty()) {
-            throw new EntityNotFoundException("User " + userName + " is not member of any " + getGroupType());
-        }
-
-        return groups;
+        return repository.findByUserName(userName);
     }
 
     public void delete(String name) {

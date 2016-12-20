@@ -48,13 +48,6 @@ public class ProjectServiceTest {
         service.find("something");
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void testUserNotInProject() throws Exception {
-        when(repository.findByUserName(any())).thenReturn(new LinkedList<Project>());
-
-        service.findByUserName("someone");
-    }
-
     @Test
     public void testFindByUserName() throws Exception {
         when(repository.findByUserName("foo"))
