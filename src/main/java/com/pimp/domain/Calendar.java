@@ -17,19 +17,16 @@ import com.pimp.commons.mongo.IKeyedObject;
  */
 public class Calendar implements IKeyedObject {
 
-  @JsonProperty
   @Id
   private String key;
-  @JsonProperty
   @NotNull
   @Size(min=2, max=30)
   private String title;
+  private String owner;
   @JsonProperty
   private boolean isPrivate = false;
-  @JsonProperty
-  List<String> subscribers = new ArrayList<>();
-  @JsonProperty
-  List<Event> events = new ArrayList<>();
+  private List<String> subscribers = new ArrayList<>();
+  private List<Event> events = new ArrayList<>();
 
   public Calendar() {
   }
@@ -42,8 +39,9 @@ public class Calendar implements IKeyedObject {
     return title;
   }
 
-  public void setTitle(String title) {
+  public Calendar setTitle(String title) {
     this.title = title;
+    return this;
   }
 
   public List<String> getSubscribers() {
@@ -58,8 +56,9 @@ public class Calendar implements IKeyedObject {
     return events;
   }
 
-  public void setEvents(List<Event> events) {
+  public Calendar setEvents(List<Event> events) {
     this.events = events;
+    return this;
   }
 
   @Override
@@ -76,8 +75,9 @@ public class Calendar implements IKeyedObject {
     return isPrivate;
   }
 
-  public void setPrivate(boolean aPrivate) {
+  public Calendar setPrivate(boolean aPrivate) {
     isPrivate = aPrivate;
+    return this;
   }
 
   public Event getEventByKey(String eventKey) {
@@ -90,5 +90,14 @@ public class Calendar implements IKeyedObject {
 
   public boolean containsEvent(String eventKey) {
     return getEventByKey(eventKey) != null;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public Calendar setOwner(String owner) {
+    this.owner = owner;
+    return this;
   }
 }

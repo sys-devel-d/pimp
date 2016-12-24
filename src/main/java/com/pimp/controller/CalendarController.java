@@ -36,12 +36,15 @@ public class CalendarController {
   }
 
   @RequestMapping(method = POST)
-  public void createCalendar(@Valid @RequestBody Calendar calendar,
+  public Calendar createCalendar(@Valid @RequestBody Calendar calendar,
       Principal principal) throws EntityValidationException {
     if (calendar.getSubscribers().isEmpty()) {
       calendar.getSubscribers().add(principal.getName());
     }
-    calendarService.createCalendar(calendar);
+    if(calendar.getOwner() == null) {
+      calendar.setOwner(principal.getName());
+    }
+    return calendarService.createCalendar(calendar);
   }
 
   @RequestMapping(method = GET)
@@ -50,7 +53,7 @@ public class CalendarController {
   }
 
   @RequestMapping(method = POST, path = "/{calendarKey}")
-  public void addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
+  public Event addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
       Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
@@ -63,6 +66,7 @@ public class CalendarController {
       }
       calendar.getEvents().add(event);
       calendarService.save(calendar);
+      return event;
     }
   }
 

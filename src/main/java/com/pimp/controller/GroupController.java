@@ -25,6 +25,11 @@ public abstract class GroupController<T extends Group> {
         this.userService = userService;
     }
 
+    @RequestMapping(method = GET, path="/user/{userName}")
+    public List<T> getList(@PathVariable String userName) {
+        return groupService.findByUserName(userName);
+    }
+
     @RequestMapping(method = GET, path = "/{name}")
     public T get(@PathVariable String name) {
         return groupService.find(name);
