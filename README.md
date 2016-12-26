@@ -21,7 +21,8 @@ This will install the following default users w/ passwords:
 {
     "ZaphodRocks": "arthurdentisaweirdo",
     "foobar": "foobarbaz",
-    "test": "12345678"
+    "test": "12345678",
+    "admin": "iamtheadminnow"
 }
 ```
 
