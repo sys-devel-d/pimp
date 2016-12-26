@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 @Service
@@ -29,18 +28,6 @@ public class CustomTokenEnhancerService implements TokenEnhancer {
         additionalInformation.put("user_name", user.getUsername());
         token.setAdditionalInformation(additionalInformation);
 
-        enhanceScope(token, user);
-
         return token;
-    }
-
-    private void enhanceScope(DefaultOAuth2AccessToken accessToken, UserDetails user) {
-        if (user.getAuthorities().stream()
-                .anyMatch(authorization -> "ADMIN".equals(authorization.getAuthority()))) {
-            HashSet<String> set = new HashSet<>();
-            set.add("user_actions");
-            set.add("admin_actions");
-            accessToken.setScope(set);
-        }
     }
 }
