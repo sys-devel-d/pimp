@@ -1,3 +1,6 @@
-[{"_id":"ZaphodRocks","_class":"com.pimp.domain.UserDocument","password":"$2a$10$vCIAZplDUQkhuZ6lqe.v/OZt8xr6Gka0wEiEgXCOnt6mEcSiQ3qHO","email":"zaphod.beeblebrox@alphacentauri.org","firstName":"Zaphod","lastName":"Beeblebrox","roles":["USER"]},
-{"_id":"foobar","_class":"com.pimp.domain.UserDocument","password":"$2a$10$uXBv72dYENC69QcW2dNbje86fnW6kSMZvu73gpzFJwSD1548n2Cmi","email":"foo@bar.org","firstName":"Foo","lastName":"Bar","roles":["USER"]},
-{"_id":"test","_class":"com.pimp.domain.UserDocument","password":"$2a$10$WJKfSTMmDufezPLjmFFGteTHmJKxQR43WNX3e3W2j46dqWuCOYDDW","email":"test@pimp.org","firstName":"Test","lastName":"Pimp","roles":["USER"]}]
+[
+    {"_id":"ZaphodRocks","_class":"com.pimp.domain.UserDocument","password":"$2a$10$vCIAZplDUQkhuZ6lqe.v/OZt8xr6Gka0wEiEgXCOnt6mEcSiQ3qHO","email":"zaphod.beeblebrox@alphacentauri.org","firstName":"Zaphod","lastName":"Beeblebrox","roles":["ROLE_USER"]},
+    {"_id":"foobar","_class":"com.pimp.domain.UserDocument","password":"$2a$10$uXBv72dYENC69QcW2dNbje86fnW6kSMZvu73gpzFJwSD1548n2Cmi","email":"foo@bar.org","firstName":"Foo","lastName":"Bar","roles":["ROLE_USER"]},
+    {"_id":"test","_class":"com.pimp.domain.UserDocument","password":"$2a$10$WJKfSTMmDufezPLjmFFGteTHmJKxQR43WNX3e3W2j46dqWuCOYDDW","email":"test@pimp.org","firstName":"Test","lastName":"Pimp","roles":["ROLE_USER"]},
+    {"_id":"admin","_class":"com.pimp.domain.UserDocument","password":"$2a$10$rCqJxB3AcsmUdAjcFIQLh.5/LcQt4YNO7SwosFIiGpA1/VTiLproK","email":"admin@pimp.org","firstName":"Ad","lastName":"Min","roles":["ROLE_ADMIN"]}
+]
