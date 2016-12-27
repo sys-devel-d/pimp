@@ -6,7 +6,6 @@ import com.pimp.commons.mongo.MongoFileStorage;
 import com.pimp.domain.User;
 import com.pimp.domain.UserDocument;
 import com.pimp.repositories.UserRepository;
-
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.bson.types.ObjectId;
@@ -53,9 +52,11 @@ public class UserService {
     }
 
     UserDocument userDocument = UserDocument.from(user)
-            .setRoles(Arrays.asList("USER"))
             .setPassword(encoder.encode(user.getPassword()));
 
+    if (userDocument.getRoles().isEmpty()) {
+      userDocument.setRoles(Arrays.asList("ROLE_USER"));
+    }
     userRepository.save(userDocument);
 
     return userDocument;
