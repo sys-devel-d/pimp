@@ -1,32 +1,27 @@
 package com.pimp.controller;
 
+import com.pimp.domain.User;
+import com.pimp.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.pimp.domain.User;
-import com.pimp.services.UserService;
-
 import static org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/users")
+@PreAuthorize("#oauth2.hasScope('user_actions')")
 public class UserController {
 
   private UserService userService;
@@ -36,26 +31,22 @@ public class UserController {
     this.userService = userService;
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/{userName}")
   public User getUser(@PathVariable String userName) throws NotFoundException {
     return userService.findByUserName(userName);
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST)
   public void createUser(@Valid @RequestBody User user) {
     userService.createUser(user);
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET)
   public List<User> getAllUsers() {
     User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return withoutCurrentUser(userService.findAll(), currentUser);
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/search/{query}")
   public List<User> searchUser(@PathVariable String query) {
     if (query.length() < 3) {
@@ -67,7 +58,6 @@ public class UserController {
     return withoutCurrentUser(foundUsers, loggedInUser);
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST, path = "/{userName}/photo")
   public String addPhotoToUser(@PathVariable String userName, @RequestBody String file) {
     try {
@@ -79,7 +69,6 @@ public class UserController {
     }
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/{userName}/photo/{photoKey}")
   @ResponseBody
   public String getUserPhoto(@PathVariable String userName, @PathVariable String photoKey) {
@@ -91,7 +80,6 @@ public class UserController {
     }
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = PUT, path = "/status")
   public ResponseEntity<String> updateStatus(@RequestBody HashMap<String, String> requestBody) {
     if(requestBody.containsKey("updatedStatus")) {
@@ -106,7 +94,6 @@ public class UserController {
   /*
     Helper
    */
-
   private List<User> withoutCurrentUser(List<User> users, User currentUser) {
     return users.stream()
             .filter(
