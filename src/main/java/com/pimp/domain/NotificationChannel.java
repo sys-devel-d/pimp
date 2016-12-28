@@ -3,8 +3,10 @@ package com.pimp.domain;
 public class NotificationChannel extends ChatRoom {
 
     public NotificationChannel() {
-        super();
+      super();
     }
+
+    private String owner;
 
     public static NotificationChannel from(NotificationChannelDocument document) {
         return (NotificationChannel) new NotificationChannel()
@@ -14,4 +16,5 @@ public class NotificationChannel extends ChatRoom {
                 .setDisplayNames(document.getDisplayNames())
                 .setMessages(document.getMessages());
     }
+
 }

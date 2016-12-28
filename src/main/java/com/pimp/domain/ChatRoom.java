@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -44,11 +45,17 @@ public class ChatRoom {
     }
 
     public ChatRoom addMessage(Message message) {
+        if (messages == null) {
+          messages = new LinkedList<>();
+        }
         this.messages.add(message);
         return this;
     }
 
     public ChatRoom addParticipant(User participant) {
+        if (participants == null) {
+          participants = new LinkedList<>();
+        }
         this.participants.add(participant);
         return this;
     }

@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 public class ClientDocument {
 
     @Id
-    @Indexed(unique = true)
     private String clientId;
     private String clientSecret;
     private List<String> resourceIds;
