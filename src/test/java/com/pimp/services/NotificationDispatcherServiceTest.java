@@ -16,6 +16,7 @@ import java.util.LinkedList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,8 +58,8 @@ public class NotificationDispatcherServiceTest {
         NotificationChannelDocument document = new NotificationChannelDocument();
         document.setRoomName("bar");
         document.setMessages(new LinkedList<>());
-
-        when(repo.findByRoomName("bar")).thenReturn(document);
+        when(repo.exists(anyString())).thenReturn(true);
+        when(repo.findOne("bar")).thenReturn(document);
 
         Notification notification = new Notification();
         notification.setAcknowledged(false);
