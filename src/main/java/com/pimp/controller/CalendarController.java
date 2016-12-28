@@ -1,6 +1,7 @@
 package com.pimp.controller;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.commons.exceptions.ForbiddenException;
@@ -22,6 +24,7 @@ import com.pimp.services.CalendarService;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
@@ -114,7 +117,53 @@ public class CalendarController {
         .collect(Collectors.toList());
       calendar.setEvents(events);
       calendarService.save(calendar);
-      }
     }
   }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = GET, path = "/search/{query}")
+  public List<Calendar> searchCalendar(@PathVariable String query, Principal principal) {
+    if (query.length() < 3) {
+      throw new IllegalArgumentException("Search string should have a length >= 3.");
+    }
+    List<Calendar> cals = calendarService.query(query, Arrays.asList("title", "subscribers"));
+    return cals
+      .stream()
+      //filter out already subscribed and private
+      .filter(cal -> !cal.isPrivate() || cal.getOwner().equals(principal.getName()))
+      .filter(cal -> calendarService.getCalendarsByUser(principal.getName())
+        .stream()
+        .noneMatch(calendar -> calendar.getKey().equals(cal.getKey())))
+      .collect(Collectors.toList());
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = PATCH, path = "/subscribe/{key}")
+  public List<Calendar> subscribe(@PathVariable String key, Principal principal) {
+    Calendar calendar = calendarService.getCalendarByKey(key);
+    List<String> subscribers = calendar.getSubscribers();
+    if (subscribers.contains(principal.getName())) {
+      throw new EntityAlreadyExistsException(principal.getName() + " has already subscribed.");
+    }
+    subscribers.add(principal.getName());
+    calendar.setSubscribers(subscribers);
+    calendarService.save(calendar);
+    return calendarService.getCalendarsByUser(principal.getName());
+  }
+
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
+  @RequestMapping(method = PATCH, path = "/unsubscribe/{key}")
+  public List<Calendar> unsubscribe(@PathVariable String key, Principal principal) {
+    Calendar calendar = calendarService.getCalendarByKey(key);
+    List<String> subscribers = calendar.getSubscribers();
+    if (!subscribers.contains(principal.getName())) {
+      throw new EntityAlreadyExistsException(
+        principal.getName() + " has no subscribed calendar with name " + calendar.getTitle());
+    }
+    subscribers.remove(principal.getName());
+    calendar.setSubscribers(subscribers);
+    calendarService.save(calendar);
+    return calendarService.getCalendarsByUser(principal.getName());
+  }
+}
 
