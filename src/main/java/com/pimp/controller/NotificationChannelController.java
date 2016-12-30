@@ -35,7 +35,7 @@ public class NotificationChannelController  {
     return service.find(user).getRoomName();
   }
 
-  @RequestMapping(path = "messages/{channel}")
+  @RequestMapping(path = "messages/{user}")
   public List<? extends Message> getNotificationsForUser(@PathVariable String user) {
     return service.find(user).getMessages();
   }
