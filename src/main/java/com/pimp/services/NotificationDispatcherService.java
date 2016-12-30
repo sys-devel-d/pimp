@@ -35,7 +35,7 @@ public class NotificationDispatcherService {
             NotificationChannelDocument document = (NotificationChannelDocument) repo.findOne(notification.getRoomId());
             notification.setCreationDate(Instant.now());
             notification.setKey(new ObjectId().toString());
-            NotificationChannel channel = (NotificationChannel) NotificationChannel.from(document);
+            NotificationChannel channel = NotificationChannel.from(document);
             channel.addMessage(notification);
             repo.save(NotificationChannelDocument.from(channel));
         } else {
@@ -69,7 +69,7 @@ public class NotificationDispatcherService {
 
     public NotificationChannel find(String channelName) {
       if (repo.exists(channelName)) {
-        NotificationChannelDocument document = repo.findByRoomName(channelName);
+        NotificationChannelDocument document = (NotificationChannelDocument) repo.findOne(channelName);
         return NotificationChannel.from(document);
       } else {
         throw new EntityNotFoundException("A channel with the name " + channelName + " does not exist.");
