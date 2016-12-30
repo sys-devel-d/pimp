@@ -2,8 +2,6 @@ package com.pimp.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import org.bson.types.ObjectId;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +11,7 @@ import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class User implements UserDetails {
@@ -38,7 +37,7 @@ public class User implements UserDetails {
     @JsonProperty()
     private String photo;
 
-    private List<String> roles;
+    private List<String> roles = Arrays.asList("USER");
 
     public static User from(UserDocument userDocument) {
         return new User()
@@ -124,7 +123,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.asList(new SimpleGrantedAuthority("USER"));
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
     }
 
     public String getPassword() {

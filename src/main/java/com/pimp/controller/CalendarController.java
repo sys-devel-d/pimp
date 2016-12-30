@@ -1,5 +1,7 @@
 package com.pimp.controller;
 
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
@@ -7,20 +9,18 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.commons.exceptions.ForbiddenException;
 import com.pimp.domain.Calendar;
 import com.pimp.domain.Event;
 import com.pimp.services.CalendarService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -33,6 +33,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
  */
 @RestController
 @RequestMapping("/calendar")
+@PreAuthorize("#oauth2.hasScope('user_actions')")
 public class CalendarController {
 
   private CalendarService calendarService;
@@ -42,7 +43,6 @@ public class CalendarController {
     this.calendarService = calendarService;
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST)
   public Calendar createCalendar(@Valid @RequestBody Calendar calendar,
       Principal principal) throws EntityValidationException {
@@ -55,13 +55,11 @@ public class CalendarController {
     return calendarService.createCalendar(calendar);
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET)
   public List<Calendar> getSubscribedCalendars(Principal principal) {
     return calendarService.getCalendarsByUser(principal.getName());
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = POST, path = "/{calendarKey}")
   public Event addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
       Principal principal) {
@@ -80,7 +78,6 @@ public class CalendarController {
     }
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = PUT, path = "/event/{eventKey}")
   public void editEvent(@Valid @RequestBody Event event, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(event.getCalendarKey());
@@ -100,7 +97,6 @@ public class CalendarController {
     }
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = DELETE, path = "/event/{eventKey}")
   public void deleteEvent(@Valid @RequestBody Event event, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(event.getCalendarKey());
@@ -120,7 +116,6 @@ public class CalendarController {
     }
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = GET, path = "/search/{query}")
   public List<Calendar> searchCalendar(@PathVariable String query, Principal principal) {
     if (query.length() < 3) {
@@ -137,7 +132,6 @@ public class CalendarController {
       .collect(Collectors.toList());
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = PATCH, path = "/subscribe/{key}")
   public List<Calendar> subscribe(@PathVariable String key, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(key);
@@ -151,7 +145,6 @@ public class CalendarController {
     return calendarService.getCalendarsByUser(principal.getName());
   }
 
-  @PreAuthorize("#oauth2.hasScope('user_actions')")
   @RequestMapping(method = PATCH, path = "/unsubscribe/{key}")
   public List<Calendar> unsubscribe(@PathVariable String key, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(key);
