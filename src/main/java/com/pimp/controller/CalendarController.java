@@ -122,14 +122,14 @@ public class CalendarController {
       throw new IllegalArgumentException("Search string should have a length >= 3.");
     }
     List<Calendar> cals = calendarService.query(query, Arrays.asList("title", "subscribers"));
-    return cals
-      .stream()
-      //filter out already subscribed and private
-      .filter(cal -> !cal.isPrivate() || cal.getOwner().equals(principal.getName()))
-      .filter(cal -> calendarService.getCalendarsByUser(principal.getName())
-        .stream()
-        .noneMatch(calendar -> calendar.getKey().equals(cal.getKey())))
-      .collect(Collectors.toList());
+    if(cals != null && !cals.isEmpty()) {
+      List<String> subscribedTo = calendarService.getCalendarsByUser(principal.getName())
+        .stream().map(Calendar::getKey).collect(Collectors.toList());
+      return cals.stream().filter(cal ->
+        !cal.getOwner().equals(principal.getName()) && !subscribedTo.contains(cal.getKey())
+      ).collect(Collectors.toList());
+    }
+    return cals;
   }
 
   @RequestMapping(method = PATCH, path = "/subscribe/{key}")
