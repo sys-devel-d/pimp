@@ -1,10 +1,13 @@
 package com.pimp.services;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.pimp.commons.exceptions.EntityValidationException;
@@ -35,11 +38,19 @@ public class CalendarService {
   }
 
   public List<Calendar> getCalendarsByUser(String username) {
-    return calendarRepository
-      .findAll()
-      .stream()
-      .filter(calendar -> calendar.getSubscribers().contains(username))
-      .collect(Collectors.toList());
+    return calendarRepository.findBySubscriber(username);
+  }
+
+  public List<Calendar> query(String query, List<String> queryParameter) {
+    Query mongoQuery = new Query();
+    Criteria criteria = new Criteria();
+    Criteria[] criterias = queryParameter.stream()
+      .map(param -> Criteria.where(param).regex(Pattern.compile(query, Pattern.CASE_INSENSITIVE)))
+      .toArray(Criteria[]::new);
+    criteria.orOperator(criterias);
+    mongoQuery.addCriteria(criteria);
+    return mongoOperations.find(mongoQuery, Calendar.class)
+      .stream().collect(Collectors.toList());
   }
 
   public Calendar save(Calendar calendar) {
