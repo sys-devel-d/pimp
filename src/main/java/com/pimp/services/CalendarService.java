@@ -38,11 +38,7 @@ public class CalendarService {
   }
 
   public List<Calendar> getCalendarsByUser(String username) {
-    return calendarRepository
-      .findAll()
-      .stream()
-      .filter(calendar -> calendar.getSubscribers().contains(username))
-      .collect(Collectors.toList());
+    return calendarRepository.findBySubscriber(username);
   }
 
   public List<Calendar> query(String query, List<String> queryParameter) {
