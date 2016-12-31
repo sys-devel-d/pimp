@@ -133,20 +133,19 @@ public class CalendarController {
   }
 
   @RequestMapping(method = PATCH, path = "/subscribe/{key}")
-  public List<Calendar> subscribe(@PathVariable String key, Principal principal) {
+  public Calendar subscribe(@PathVariable String key, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(key);
     List<String> subscribers = calendar.getSubscribers();
     if (subscribers.contains(principal.getName())) {
-      throw new EntityAlreadyExistsException(principal.getName() + " has already subscribed.");
+      throw new EntityAlreadyExistsException(principal.getName() + " is already subscribed.");
     }
     subscribers.add(principal.getName());
     calendar.setSubscribers(subscribers);
-    calendarService.save(calendar);
-    return calendarService.getCalendarsByUser(principal.getName());
+    return calendarService.save(calendar);
   }
 
   @RequestMapping(method = PATCH, path = "/unsubscribe/{key}")
-  public List<Calendar> unsubscribe(@PathVariable String key, Principal principal) {
+  public void unsubscribe(@PathVariable String key, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(key);
     List<String> subscribers = calendar.getSubscribers();
     if (!subscribers.contains(principal.getName())) {
@@ -156,7 +155,6 @@ public class CalendarController {
     subscribers.remove(principal.getName());
     calendar.setSubscribers(subscribers);
     calendarService.save(calendar);
-    return calendarService.getCalendarsByUser(principal.getName());
   }
 }
 
