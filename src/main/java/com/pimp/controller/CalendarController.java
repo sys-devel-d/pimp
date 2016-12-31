@@ -152,6 +152,9 @@ public class CalendarController {
       throw new EntityAlreadyExistsException(
         principal.getName() + " has no subscribed calendar with name " + calendar.getTitle());
     }
+    if(calendar.getOwner().equals(principal.getName())) {
+      throw new ForbiddenException("You cannot unsubscribe from your own calendars");
+    }
     subscribers.remove(principal.getName());
     calendar.setSubscribers(subscribers);
     calendarService.save(calendar);
