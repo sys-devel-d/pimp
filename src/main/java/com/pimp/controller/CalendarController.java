@@ -66,54 +66,61 @@ public class CalendarController {
     Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
       throw new EntityNotFoundException("A calendar with the key " + calendarKey + " does not exist");
-    } else if (!calendar.getSubscribers().contains(principal.getName())) {
-      throw new ForbiddenException("You can't add an event to a unsubscribed calendar");
-    } else {
-      if (event.getCalendarKey() == null) {
-        event.setCalendarKey(calendar.getKey());
-      }
-      calendar.getEvents().add(event);
-      calendarService.save(calendar);
-      return event;
     }
+    if (!calendar.getOwner().equals(principal.getName())) {
+      throw new ForbiddenException("You are not allowed to add events to this calendar");
+    }
+    if (!calendar.getSubscribers().contains(principal.getName())) {
+      throw new ForbiddenException("You can't add an event to a unsubscribed calendar");
+    }
+    if (event.getCalendarKey() == null) {
+      event.setCalendarKey(calendar.getKey());
+    }
+    calendar.getEvents().add(event);
+    calendarService.save(calendar);
+    return event;
   }
 
   @RequestMapping(method = PUT, path = "/event/{eventKey}")
   public void editEvent(@Valid @RequestBody Event event, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(event.getCalendarKey());
-
     if (calendar == null) {
       throw new EntityNotFoundException("An event with the key " + event.getKey() +
           " does not exist");
-    } else if (!calendar.getSubscribers().contains(principal.getName())) {
-      throw new ForbiddenException("You can't edit an event of a unsubscribed calendar");
-    } else {
-      List<Event> events = calendar.getEvents()
-        .stream()
-        .map(aEvent -> aEvent.getKey().equals(event.getKey()) ? event : aEvent)
-        .collect(Collectors.toList());
-      calendar.setEvents(events);
-      calendarService.save(calendar);
     }
+    if (!calendar.getOwner().equals(principal.getName())) {
+      throw new ForbiddenException("You are not allowed to edit this event");
+    }
+    if (!calendar.getSubscribers().contains(principal.getName())) {
+      throw new ForbiddenException("You can't edit an event of a unsubscribed calendar");
+    }
+    List<Event> events = calendar.getEvents()
+      .stream()
+      .map(aEvent -> aEvent.getKey().equals(event.getKey()) ? event : aEvent)
+      .collect(Collectors.toList());
+    calendar.setEvents(events);
+    calendarService.save(calendar);
   }
 
   @RequestMapping(method = DELETE, path = "/event/{eventKey}")
   public void deleteEvent(@Valid @RequestBody Event event, Principal principal) {
     Calendar calendar = calendarService.getCalendarByKey(event.getCalendarKey());
-
     if (calendar == null) {
       throw new EntityNotFoundException("An event with the key " + event.getKey() +
           " does not exist");
-    } else if (!calendar.getSubscribers().contains(principal.getName())) {
-      throw new ForbiddenException("You can't delete an event of a unsubscribed calendar");
-    } else {
-      List<Event> events = calendar.getEvents()
-        .stream()
-        .filter(aEvent -> !aEvent.getKey().equals(event.getKey()))
-        .collect(Collectors.toList());
-      calendar.setEvents(events);
-      calendarService.save(calendar);
     }
+    if (!calendar.getOwner().equals(principal.getName())) {
+      throw new ForbiddenException("Your are not allowed to delete this event");
+    }
+    if (!calendar.getSubscribers().contains(principal.getName())) {
+      throw new ForbiddenException("You can't delete an event of a unsubscribed calendar");
+    }
+    List<Event> events = calendar.getEvents()
+      .stream()
+      .filter(aEvent -> !aEvent.getKey().equals(event.getKey()))
+      .collect(Collectors.toList());
+    calendar.setEvents(events);
+    calendarService.save(calendar);
   }
 
   @RequestMapping(method = GET, path = "/search/{query}")
