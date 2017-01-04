@@ -4,6 +4,7 @@ import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.ChatRoom;
 import com.pimp.domain.ChatRoomDocument;
+import com.pimp.domain.Message;
 import com.pimp.domain.User;
 import com.pimp.repositories.ChatRoomRepository;
 import org.bson.types.ObjectId;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -64,28 +66,18 @@ public class ChatRoomService {
     chatRoomRepository.save(ChatRoomDocument.from(chatRoom));
   }
 
-  /**
-   * Fetches a room by roomName from database.
-   * If it doesn't exists then it creates one and saves it to database.
-   */
-  public ChatRoom getExistingOrCreate(String roomName) {
-    ChatRoomDocument chatRoomDocument = chatRoomRepository.findByRoomName(roomName);
-
-    if(chatRoomDocument == null) {
-      chatRoomDocument = createChatRoom(
-              new ChatRoom()
-                  .setRoomName(roomName)
-                  .setMessages(new ArrayList<>())
-                  .setParticipants(new ArrayList<>())
-      );
-    }
-    return ChatRoom.from(chatRoomDocument);
-  }
-
   public List<ChatRoom> findUsersRooms(User user) {
     Query mongoQuery = new Query();
     mongoQuery.addCriteria(Criteria.where("participants.userName").in(user.getUserName()));
     return mongoOperations.find(mongoQuery, ChatRoomDocument.class).stream().map(ChatRoom::from).collect(Collectors.toList());
+  }
+
+  public void insertMessageIntoRoom(Message message) {
+    mongoOperations.updateFirst(
+      Query.query(Criteria.where("_id").is(message.getRoomId())),
+      new Update().push("messages", message),
+      ChatRoomDocument.class
+    );
   }
 
   public ChatRoom initializeRoom(List<User> users, String roomType, HashMap<String, String> displayNames) throws NoSuchAlgorithmException {
