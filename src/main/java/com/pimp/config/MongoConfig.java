@@ -29,6 +29,9 @@ public class MongoConfig extends AbstractMongoConfiguration{
     @Value("${db.name}")
     private String dbName;
 
+    @Value("${db.port}")
+    private int dbPort;
+
     @Bean
     public MongoFileStorage mongoFileStorage(GridFsTemplate gridFsTemplate) {
         return new MongoFileStorage(gridFsTemplate);
@@ -57,7 +60,7 @@ public class MongoConfig extends AbstractMongoConfiguration{
             MongoClientURI uri = new MongoClientURI(dbUri);
             mongoClient = new MongoClient(uri);
         } else {
-            mongoClient = new MongoClient(dbHost);
+            mongoClient = new MongoClient(dbHost, dbPort);
         }
         return mongoClient;
     }
