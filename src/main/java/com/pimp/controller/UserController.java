@@ -38,7 +38,11 @@ public class UserController {
 
   @RequestMapping(method = POST)
   public void createUser(@Valid @RequestBody User user) {
-    userService.createUser(user);
+    if (user.getEmail().endsWith("@pim-plus.org")) {
+      userService.createUser(user);
+    } else {
+      throw new IllegalArgumentException("Only accepting mail addresses ending with '@pim-plus.org'");
+    }
   }
 
   @RequestMapping(method = GET)
