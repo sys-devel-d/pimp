@@ -21,7 +21,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("#oauth2.hasScope('user_actions')")
 public class UserController {
 
   private UserService userService;
@@ -32,6 +31,7 @@ public class UserController {
   }
 
   @RequestMapping(method = GET, path = "/{userName}")
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public User getUser(@PathVariable String userName) throws NotFoundException {
     return userService.findByUserName(userName);
   }
@@ -42,12 +42,14 @@ public class UserController {
   }
 
   @RequestMapping(method = GET)
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public List<User> getAllUsers() {
     User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return withoutCurrentUser(userService.findAll(), currentUser);
   }
 
   @RequestMapping(method = GET, path = "/search/{query}")
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public List<User> searchUser(@PathVariable String query) {
     if (query.length() < 3) {
       throw new IllegalArgumentException("Search string should have a length >= 3.");
@@ -59,6 +61,7 @@ public class UserController {
   }
 
   @RequestMapping(method = POST, path = "/{userName}/photo")
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public String addPhotoToUser(@PathVariable String userName, @RequestBody String file) {
     try {
       String photoKey = userService.uploadPhoto(userName, file);
@@ -71,6 +74,7 @@ public class UserController {
 
   @RequestMapping(method = GET, path = "/{userName}/photo/{photoKey}")
   @ResponseBody
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public String getUserPhoto(@PathVariable String userName, @PathVariable String photoKey) {
     try {
       return userService.findPhotoByName(photoKey);
@@ -81,6 +85,7 @@ public class UserController {
   }
 
   @RequestMapping(method = PUT, path = "/status")
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
   public ResponseEntity<String> updateStatus(@RequestBody HashMap<String, String> requestBody) {
     if(requestBody.containsKey("updatedStatus")) {
       User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

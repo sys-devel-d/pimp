@@ -1,7 +1,6 @@
 package com.pimp.domain;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.stream.Collectors;
 public class ClientDocument {
 
     @Id
-    @Indexed(unique = true)
     private String clientId;
     private String clientSecret;
     private List<String> resourceIds;
