@@ -2,11 +2,17 @@ package com.pimp.services;
 
 import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.domain.ChatRoomDocument;
 import com.pimp.domain.Notification;
 import com.pimp.domain.NotificationChannel;
 import com.pimp.domain.NotificationChannelDocument;
 import com.pimp.repositories.NotificationChannelRepo;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -16,6 +22,8 @@ import java.time.Instant;
 public class NotificationDispatcherService {
 
     private NotificationChannelRepo repo;
+    @Autowired
+    private MongoOperations mongoOperations;
 
     public NotificationDispatcherService(NotificationChannelRepo notificationChannelRepo) {
         this.repo = notificationChannelRepo;
@@ -32,12 +40,13 @@ public class NotificationDispatcherService {
 
     private Notification addNotification(Notification notification) {
         if (repo.exists(notification.getRoomId())) {
-            NotificationChannelDocument document = (NotificationChannelDocument) repo.findOne(notification.getRoomId());
             notification.setCreationDate(Instant.now());
             notification.setKey(new ObjectId().toString());
-            NotificationChannel channel = NotificationChannel.from(document);
-            channel.addMessage(notification);
-            repo.save(NotificationChannelDocument.from(channel));
+            mongoOperations.updateFirst(
+              Query.query(Criteria.where("_id").is(notification.getRoomId())),
+              new Update().push("messages", notification),
+              ChatRoomDocument.class
+            );
         } else {
           throw new EntityNotFoundException("Could not find channel with id " + notification.getRoomId() + ".");
         }
@@ -60,11 +69,15 @@ public class NotificationDispatcherService {
     }
 
     private void updateAcked(Notification notification) {
-        NotificationChannelDocument channel = repo.findByRoomName(notification.getRoomId());
-        channel.getMessages().stream()
-                .filter(message -> message.getKey().equals(notification.getKey()))
-                .map(message -> ((Notification) message).setAcknowledged(notification.isAcknowledged()));
-        repo.save(channel);
+        Query query = Query.query(new Criteria().andOperator(
+          Criteria.where("_id").is(notification.getRoomId()),
+          Criteria.where("messages").elemMatch(Criteria.where("key").is(notification.getKey()))
+        ));
+        mongoOperations.updateFirst(
+          query,
+          new Update().set("messages.$.acknowledged", notification.isAcknowledged()),
+          ChatRoomDocument.class
+        );
     }
 
     public NotificationChannel find(String channelName) {
