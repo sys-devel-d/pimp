@@ -1,6 +1,5 @@
 package com.pimp.controller;
 
-import com.pimp.domain.ChatRoom;
 import com.pimp.domain.Message;
 import com.pimp.services.ChatRoomService;
 import org.bson.types.ObjectId;
@@ -35,12 +34,9 @@ public class ChatController {
   }
 
   private Message handleIncomingMessage(Message message) {
-    Instant creationDate = Instant.now();
-    message.setCreationDate(creationDate);
+    message.setCreationDate(Instant.now());
     message.setKey(new ObjectId().toString());
-    ChatRoom chatRoom = chatRoomService.findByRoomName(message.getRoomId());
-    chatRoom.addMessage(message);
-    chatRoomService.save(chatRoom);
+    chatRoomService.insertMessageIntoRoom(message);
     return message;
   }
 
