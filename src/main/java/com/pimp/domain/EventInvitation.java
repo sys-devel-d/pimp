@@ -2,11 +2,10 @@ package com.pimp.domain;
 
 import java.util.List;
 
-public class EventInvitation implements NotificationMessage {
+public class EventInvitation extends NotificationMessage {
 
     private String eventKey;
     private List<String> invitedUsers;
-    private String invitingUser;
     private String calendarKey;
 
     public String getEventKey() {
@@ -24,15 +23,6 @@ public class EventInvitation implements NotificationMessage {
 
     public EventInvitation setInvitedUsers(List<String> invitedUsers) {
         this.invitedUsers = invitedUsers;
-        return this;
-    }
-
-    public String getInvitingUser() {
-        return invitingUser;
-    }
-
-    public EventInvitation setInvitingUser(String invitingUser) {
-        this.invitingUser = invitingUser;
         return this;
     }
 
