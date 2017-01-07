@@ -16,5 +16,4 @@ public class NotificationChannel extends ChatRoom {
                 .setDisplayNames(document.getDisplayNames())
                 .setMessages(document.getMessages());
     }
-
 }
