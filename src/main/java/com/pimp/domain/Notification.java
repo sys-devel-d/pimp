@@ -1,10 +1,13 @@
 package com.pimp.domain;
 
-public class Notification extends Message{
+public class Notification extends Message {
 
     private NotificationType type;
     private boolean acknowledged;
-    private NotificationMessage notificationMessage;
+    private String eventKey;
+    private String calendarKey;
+    private String sendingUser;
+    private String receivingUser;
 
     public NotificationType getType() {
         return type;
@@ -13,6 +16,22 @@ public class Notification extends Message{
     public Notification setType(NotificationType type) {
         this.type = type;
         return this;
+    }
+
+    public String getSendingUser() {
+        return sendingUser;
+    }
+
+    public void setSendingUser(String sendingUser) {
+        this.sendingUser = sendingUser;
+    }
+
+    public String getReceivingUser() {
+        return receivingUser;
+    }
+
+    public void setReceivingUser(String receivingUser) {
+        this.receivingUser = receivingUser;
     }
 
     public boolean isAcknowledged() {
@@ -24,12 +43,19 @@ public class Notification extends Message{
         return this;
     }
 
-    public NotificationMessage getNotificationMessage() {
-        return notificationMessage;
+    public String getEventKey() {
+        return eventKey;
     }
 
-    public Notification setNotificationMessage(NotificationMessage notificationMessage) {
-        this.notificationMessage = notificationMessage;
-        return this;
+    public void setEventKey(String eventKey) {
+        this.eventKey = eventKey;
+    }
+
+    public String getCalendarKey() {
+        return calendarKey;
+    }
+
+    public void setCalendarKey(String calendarKey) {
+        this.calendarKey = calendarKey;
     }
 }

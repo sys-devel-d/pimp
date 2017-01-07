@@ -1,30 +1,50 @@
 package com.pimp.controller;
 
+<<<<<<< HEAD
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Arrays;
+=======
+import java.security.Principal;
+>>>>>>> f6b9697... Refactors notification services.
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+<<<<<<< HEAD
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.commons.exceptions.ForbiddenException;
 import com.pimp.domain.Calendar;
 import com.pimp.domain.Event;
 import com.pimp.services.CalendarService;
+=======
+>>>>>>> f6b9697... Refactors notification services.
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+<<<<<<< HEAD
 import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+=======
+import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.commons.exceptions.EntityValidationException;
+import com.pimp.commons.exceptions.ForbiddenException;
+import com.pimp.domain.Calendar;
+import com.pimp.domain.Event;
+import com.pimp.domain.InvitationResponse;
+import com.pimp.services.CalendarService;
+
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+>>>>>>> f6b9697... Refactors notification services.
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
@@ -93,6 +113,11 @@ public class CalendarController {
     }
     if (!calendar.getSubscribers().contains(principal.getName())) {
       throw new ForbiddenException("You can't edit an event of a unsubscribed calendar");
+<<<<<<< HEAD
+=======
+    } else {
+      calendarService.replaceEvent(event);
+>>>>>>> f6b9697... Refactors notification services.
     }
     List<Event> events = calendar.getEvents()
       .stream()
@@ -115,6 +140,7 @@ public class CalendarController {
     if (!calendar.getSubscribers().contains(principal.getName())) {
       throw new ForbiddenException("You can't delete an event of a unsubscribed calendar");
     }
+<<<<<<< HEAD
     List<Event> events = calendar.getEvents()
       .stream()
       .filter(aEvent -> !aEvent.getKey().equals(event.getKey()))
@@ -165,6 +191,38 @@ public class CalendarController {
     subscribers.remove(principal.getName());
     calendar.setSubscribers(subscribers);
     calendarService.save(calendar);
+=======
+
+
+  @RequestMapping(method = POST, path = "/invitation")
+  public void acceptOrDeclineInvitation(@Valid @RequestBody InvitationResponse response,
+    Principal principal) {
+
+
+
+    Calendar calendar = calendarService.getCalendarByKey(response.getCalendarKey());
+
+    if (calendar == null) {
+      throw new EntityNotFoundException("An event with the key " + response.getEventKey() +
+        "does not exist");
+    }
+    // since we do not have the separation between invited, declined and accepted user for a event,
+    // we can't make the transitition invited => declined
+    // for now, we could only delete the user in the participant list in case of a decline
+    if (response.getState().equals(InvitationResponse.DECLINED)) {
+      Event newEvent =
+        calendar.getEvents()
+          .stream()
+          .filter(event -> event.getKey().equals(response.getEventKey()))
+          .findFirst()
+          .get();
+      newEvent.getParticipants().remove(principal.getName());
+      calendarService.replaceEvent(newEvent);
+    }
+
+>>>>>>> f6b9697... Refactors notification services.
   }
+}
+
 }
 
