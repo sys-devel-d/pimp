@@ -25,4 +25,16 @@ public class CustomTokenEnhancerServiceTest {
         assertThat(enhanced.getAdditionalInformation().containsKey("user_name"));
         assertThat(enhanced.getAdditionalInformation().get("user_name")).isEqualTo("fooBar");
     }
+
+    @Test
+    public void testEnhancesTokenWithUserRole() throws Exception {
+        DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(DefaultOAuth2AccessToken.ACCESS_TOKEN);
+        OAuth2Authentication authentication = Mockito.mock(OAuth2Authentication.class);
+        when(authentication.getPrincipal()).thenReturn(new User().setUserName("fooBar"));
+
+        OAuth2AccessToken enhanced = tokenEnhancer.enhance(token, authentication);
+
+        assertThat(enhanced.getAdditionalInformation().containsKey("user_roles"));
+        assertThat((String )enhanced.getAdditionalInformation().get("user_roles")).contains("USER");
+    }
 }
