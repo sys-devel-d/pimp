@@ -77,6 +77,10 @@ public class CalendarController {
     if (event.getCalendarKey() == null) {
       event.setCalendarKey(calendar.getKey());
     }
+    // TODO: autosubscribe to be discussed
+    event.getParticipants().forEach(participant -> {
+      calendar.getSubscribers().add(participant);
+    });
     calendar.getEvents().add(event);
     calendarService.save(calendar);
     return event;
@@ -167,16 +171,12 @@ public class CalendarController {
   @RequestMapping(method = POST, path = "/invitation")
   public void acceptOrDeclineInvitation(@Valid @RequestBody InvitationResponse response,
     Principal principal) {
-    
+
     Calendar calendar = calendarService.getCalendarByKey(response.getCalendarKey());
 
     if (calendar == null) {
       throw new EntityNotFoundException("An event with the key " + response.getEventKey() +
         "does not exist");
-    }
-    // TODO: auto-subscribe calendar ? otherwise, the invited user can't see the event
-    if (!calendar.getSubscribers().contains(principal.getName())) {
-      calendar.getSubscribers().add(principal.getName());
     }
     // TODO: since we do not have the separation between invited, declined and accepted user for a event,
     // we can't make the transitition invited => declined
