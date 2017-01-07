@@ -3,6 +3,7 @@ package com.pimp.controller;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.domain.User;
 import com.pimp.services.UserService;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest extends ControllerTest {
@@ -78,7 +77,39 @@ public class UserControllerTest extends ControllerTest {
     public void testCreateUserWithInvalidContent() throws Exception {
         server.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"email\":\"foo@bar.org\"}"))
+                        .content("{\"email\":\"foo@pim-plus.org\"}"))
                 .andExpect(status().isUnprocessableEntity());
     }
+
+  @Test
+  public void testCreateWithInvalidEmail() throws Exception {
+        JSONObject json = new JSONObject();
+        json
+            .put("userName", "foo")
+            .put("email", "foo@bar.org")
+            .put("firstName", "Foo")
+            .put("lastName", "Bar")
+            .put("password", "foobarbaz");
+
+        server.perform(post("/users")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(json.toString()))
+          .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void testCreateWithValidEmail() throws Exception {
+    JSONObject json = new JSONObject();
+    json
+      .put("userName", "foo")
+      .put("email", "foo@pim-plus.org")
+      .put("firstName", "Foo")
+      .put("lastName", "Bar")
+      .put("password", "foobarbaz");
+
+    server.perform(post("/users")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(json.toString()))
+      .andExpect(status().isOk());
+  }
 }
