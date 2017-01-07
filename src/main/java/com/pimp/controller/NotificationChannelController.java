@@ -1,6 +1,7 @@
 package com.pimp.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pimp.domain.Message;
 import com.pimp.domain.Notification;
 import com.pimp.domain.NotificationChannel;
 import com.pimp.services.NotificationDispatcherService;
@@ -39,13 +39,17 @@ public class NotificationChannelController  {
   }
 
   @RequestMapping(path = "messages/{user}")
-  public List<? extends Message> getNotificationsForUser(@PathVariable String user) {
-    return service.find(user).getMessages();
+  public List<Notification> getNotificationsForUser(@PathVariable String user) {
+    List<Notification> notifications =
+      (List<Notification>)(List<?>) service.find(user).getMessages();
+    return notifications
+      .stream()
+      .filter(notification -> !notification.isAcknowledged())
+      .collect(Collectors.toList());
   }
 
   @RequestMapping(path = "/acknowledge", method = RequestMethod.POST)
   public void acknowledgeNotification(@RequestBody Notification notification) {
-
     service.updateAcked(notification);
   }
 }

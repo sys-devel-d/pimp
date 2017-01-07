@@ -206,7 +206,11 @@ public class CalendarController {
       throw new EntityNotFoundException("An event with the key " + response.getEventKey() +
         "does not exist");
     }
-    // since we do not have the separation between invited, declined and accepted user for a event,
+    // TODO: auto-subscribe calendar ? otherwise, the invited user can't see the event
+    if (!calendar.getSubscribers().contains(principal.getName())) {
+      calendar.getSubscribers().add(principal.getName());
+    }
+    // TODO: since we do not have the separation between invited, declined and accepted user for a event,
     // we can't make the transitition invited => declined
     // for now, we could only delete the user in the participant list in case of a decline
     if (response.getState().equals(InvitationResponse.DECLINED)) {
