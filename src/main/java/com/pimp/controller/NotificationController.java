@@ -1,11 +1,12 @@
 package com.pimp.controller;
 
-import com.pimp.domain.Notification;
-import com.pimp.services.NotificationDispatcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.pimp.domain.Notification;
+import com.pimp.services.NotificationDispatcherService;
 
 @RestController
 public class NotificationController {

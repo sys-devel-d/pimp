@@ -1,14 +1,18 @@
 package com.pimp.services;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.domain.Calendar;
+import com.pimp.domain.Event;
 import com.pimp.repositories.CalendarRepository;
 
 /**
@@ -35,11 +39,19 @@ public class CalendarService {
   }
 
   public List<Calendar> getCalendarsByUser(String username) {
-    return calendarRepository
-      .findAll()
-      .stream()
-      .filter(calendar -> calendar.getSubscribers().contains(username))
-      .collect(Collectors.toList());
+    return calendarRepository.findBySubscriber(username);
+  }
+
+  public List<Calendar> query(String query, List<String> queryParameter) {
+    Query mongoQuery = new Query();
+    Criteria criteria = new Criteria();
+    Criteria[] criterias = queryParameter.stream()
+      .map(param -> Criteria.where(param).regex(Pattern.compile(query, Pattern.CASE_INSENSITIVE)))
+      .toArray(Criteria[]::new);
+    criteria.orOperator(criterias);
+    mongoQuery.addCriteria(criteria);
+    return mongoOperations.find(mongoQuery, Calendar.class)
+      .stream().collect(Collectors.toList());
   }
 
   public Calendar save(Calendar calendar) {
@@ -48,6 +60,17 @@ public class CalendarService {
 
   public Calendar getCalendarByKey(String key) {
     return calendarRepository.findOne(key);
+  }
+
+  public void replaceEvent(Event event) {
+    Calendar calendar = getCalendarByKey(event.getCalendarKey());
+
+    List<Event> events = calendar.getEvents()
+        .stream()
+        .map(aEvent -> aEvent.getKey().equals(event.getKey()) ? event : aEvent)
+        .collect(Collectors.toList());
+    calendar.setEvents(events);
+    save(calendar);
   }
 
 }
