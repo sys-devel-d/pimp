@@ -1,5 +1,6 @@
 package com.pimp.services;
 
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -26,6 +27,8 @@ public class CustomTokenEnhancerService implements TokenEnhancer {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         Map<String, Object> additionalInformation = new HashMap<>();
         additionalInformation.put("user_name", user.getUsername());
+        String roles = user.getAuthorities().stream().map(GrantedAuthority::toString).reduce((o, o2) -> o + ", " + o2).get();
+        additionalInformation.put("user_roles", roles);
         token.setAdditionalInformation(additionalInformation);
 
         return token;
