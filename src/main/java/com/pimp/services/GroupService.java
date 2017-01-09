@@ -25,15 +25,24 @@ public abstract class GroupService<T extends Group> {
         repository.save(group);
     }
 
+    public T findByKey(String key) {
+      T group = repository.findByKey(key);
+
+      if (group == null) {
+        throw new EntityNotFoundException(getGroupType() + " with key " + key + " does not exist.");
+      }
+
+      return group;
+    }
 
     public T find(String name) {
-        T group = repository.findByName(name);
+      T group = repository.findByName(name);
 
-        if (group == null) {
-            throw new EntityNotFoundException(getGroupType() + " " + name + " does not exist.");
-        }
+      if (group == null) {
+        throw new EntityNotFoundException(getGroupType() + " " + name + " does not exist.");
+      }
 
-        return group;
+      return group;
     }
 
     public List<T> findByUserName(String userName) {
