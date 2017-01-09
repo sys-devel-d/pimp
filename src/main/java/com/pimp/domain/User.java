@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Collection;
@@ -18,6 +19,7 @@ public class User implements UserDetails {
 
     @NotEmpty
     @JsonProperty
+    @Pattern(regexp = "[a-zA-Z0-9]*")
     private String userName;
     @NotEmpty
     @JsonProperty

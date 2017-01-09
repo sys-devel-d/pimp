@@ -112,4 +112,36 @@ public class UserControllerTest extends ControllerTest {
       .content(json.toString()))
       .andExpect(status().isOk());
   }
+
+  @Test
+  public void testCreateWithIllegalUserName() throws Exception {
+    JSONObject json = new JSONObject();
+    json
+      .put("userName", "foo.bar")
+      .put("email", "foo@pim-plus.org")
+      .put("firstName", "Foo")
+      .put("lastName", "Bar")
+      .put("password", "foobarbaz");
+
+    server.perform(post("/users")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(json.toString()))
+      .andExpect(status().isUnprocessableEntity());
+  }
+
+  @Test
+  public void testCreateWithAllowedUserName() throws Exception {
+    JSONObject json = new JSONObject();
+    json
+      .put("userName", "fooBar2")
+      .put("email", "foo@pim-plus.org")
+      .put("firstName", "Foo")
+      .put("lastName", "Bar")
+      .put("password", "foobarbaz");
+
+    server.perform(post("/users")
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(json.toString()))
+      .andExpect(status().isOk());
+  }
 }
