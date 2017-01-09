@@ -38,7 +38,7 @@ public class NotificationDispatcherService {
             notification.setCreationDate(Instant.now());
             notification.setKey(new ObjectId().toString());
             mongoOperations.updateFirst(
-              Query.query(Criteria.where("_id").is(notification.getRoomId())),
+              Query.query(Criteria.where("_id").is(notification.getReceivingUser())),
               new Update().push("messages", notification),
               ChatRoomDocument.class
             );
