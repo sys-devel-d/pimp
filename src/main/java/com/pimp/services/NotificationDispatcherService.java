@@ -1,6 +1,7 @@
 package com.pimp.services;
 
 import java.time.Instant;
+import java.util.Collections;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -58,10 +59,14 @@ public class NotificationDispatcherService {
         }
     }
 
-    public NotificationChannelDocument create(NotificationChannel channel) {
-        if (repo.exists(channel.getRoomName())) {
-            throw new EntityAlreadyExistsException("A channel with the name " + channel.getRoomName() + " already exists.");
+    public NotificationChannelDocument create(String channelName) {
+        if (repo.exists(channelName)) {
+            throw new EntityAlreadyExistsException("A channel with the name " + channelName + " already exists.");
         }
+
+        NotificationChannel channel = (NotificationChannel) new NotificationChannel()
+          .setMessages(Collections.emptyList())
+          .setRoomName(channelName);
 
         return repo.save(NotificationChannelDocument.from(channel));
     }

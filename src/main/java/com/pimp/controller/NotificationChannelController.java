@@ -1,12 +1,10 @@
 package com.pimp.controller;
 
 import com.pimp.domain.Notification;
-import com.pimp.domain.NotificationChannel;
 import com.pimp.services.NotificationDispatcherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +21,7 @@ public class NotificationChannelController  {
 
   @RequestMapping(path = "/user/{user}", method = RequestMethod.POST)
   public void init(@PathVariable String user) {
-    NotificationChannel channel = (NotificationChannel) new NotificationChannel()
-      .setRoomName(user);
-
-    service.create(channel);
+    service.create(user);
   }
 
   @RequestMapping(path = "/user/{user}", method = RequestMethod.GET)
@@ -38,8 +33,7 @@ public class NotificationChannelController  {
   public List<Notification> getNotificationsForUser(@PathVariable String user) {
     List<Notification> notifications =
       (List<Notification>)(List<?>) service.find(user).getMessages();
-    return notifications == null ? Collections.emptyList() :
-      notifications
+    return notifications
         .stream()
         .filter(notification -> !notification.isAcknowledged())
         .collect(Collectors.toList());
