@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,4 +79,21 @@ public class ProjectServiceTest {
 
         service.delete("foo");
     }
+
+  @Test
+  public void testFindByKey() throws Exception {
+    Project assertedProject = new Project();
+    when(repository.findByKey(any())).thenReturn(assertedProject);
+
+    Project actualProject = service.findByKey("foo");
+
+    assertThat(actualProject).isEqualTo(assertedProject);
+  }
+
+  @Test(expected = EntityNotFoundException.class)
+  public void testFindNonExistingByKey() throws Exception {
+    when(repository.findByKey(any())).thenReturn(null);
+
+    service.findByKey("foo");
+  }
 }

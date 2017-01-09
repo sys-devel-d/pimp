@@ -30,9 +30,15 @@ public abstract class GroupController<T extends Group> {
         return groupService.findByUserName(userName);
     }
 
+    @Deprecated
     @RequestMapping(method = GET, path = "/{name}")
     public T get(@PathVariable String name) {
         return groupService.find(name);
+    }
+
+    @RequestMapping(method = GET, path = "/id/{key}")
+    public T getByKey(@PathVariable String key) {
+        return groupService.findByKey(key);
     }
 
     @RequestMapping(method = POST)
