@@ -4,8 +4,10 @@ public class Notification extends Message {
 
     private NotificationType type;
     private boolean acknowledged;
-    private String eventKey;
-    private String calendarKey;
+    // e.g. eventKey, messageKey
+    private String referenceKey;
+    // e.g. calendarKey, roomName
+    private String referenceParentKey;
     private String sendingUser;
     private String receivingUser;
 
@@ -43,19 +45,19 @@ public class Notification extends Message {
         return this;
     }
 
-    public String getEventKey() {
-        return eventKey;
+    public String getReferenceKey() {
+        return referenceKey;
     }
 
-    public void setEventKey(String eventKey) {
-        this.eventKey = eventKey;
+    public void setReferenceKey(String referenceKey) {
+        this.referenceKey = referenceKey;
     }
 
-    public String getCalendarKey() {
-        return calendarKey;
+    public String getReferenceParentKey() {
+        return referenceParentKey;
     }
 
-    public void setCalendarKey(String calendarKey) {
-        this.calendarKey = calendarKey;
+    public void setReferenceParentKey(String referenceParentKey) {
+        this.referenceParentKey = referenceParentKey;
     }
 }
