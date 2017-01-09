@@ -133,7 +133,7 @@ public class UserControllerTest extends ControllerTest {
   public void testCreateWithAllowedUserName() throws Exception {
     JSONObject json = new JSONObject();
     json
-      .put("userName", "fooBar2")
+      .put("userName", "foo-Bar_2")
       .put("email", "foo@pim-plus.org")
       .put("firstName", "Foo")
       .put("lastName", "Bar")

@@ -19,7 +19,7 @@ public class User implements UserDetails {
 
     @NotEmpty
     @JsonProperty
-    @Pattern(regexp = "[a-zA-Z0-9]*")
+    @Pattern(regexp = "[a-zA-Z0-9-_]*")
     private String userName;
     @NotEmpty
     @JsonProperty
@@ -32,6 +32,7 @@ public class User implements UserDetails {
     private String lastName;
     @Size(max = 1024)
     private String status;
+    @NotEmpty
     @Size(min = 8, max = 255)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
