@@ -27,7 +27,7 @@ public class RestAdvice {
   @ResponseBody
   public JSONError illegalArgument(IllegalArgumentException e) {
     log.warn(e.getMessage(), e);
-    return JSONError.badRequest();
+    return JSONError.badRequest(e.getMessage());
   }
 
   @ExceptionHandler({BadRequestException.class})
