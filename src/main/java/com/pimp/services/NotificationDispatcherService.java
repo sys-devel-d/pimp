@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Collections;
 
 @Service
 public class NotificationDispatcherService {
@@ -63,14 +64,19 @@ public class NotificationDispatcherService {
         if (repo.exists(channelName)) {
             NotificationChannelDocument document = (NotificationChannelDocument) repo.findOne(channelName);
             return NotificationChannel.from(document);
+        } else {
+            throw new EntityNotFoundException("A channel with the name " + channelName + " does not exist.");
         }
-        throw new EntityNotFoundException("A channel with the name " + channelName + " does not exist.");
     }
 
-    public NotificationChannelDocument create(NotificationChannel channel) {
-        if (repo.exists(channel.getRoomName())) {
-            throw new EntityAlreadyExistsException("A channel with the name " + channel.getRoomName() + " already exists.");
+    public NotificationChannelDocument create(String channelName) {
+        if (repo.exists(channelName)) {
+            throw new EntityAlreadyExistsException("A channel with the name " + channelName + " already exists.");
         }
+
+        NotificationChannel channel = (NotificationChannel) new NotificationChannel()
+          .setMessages(Collections.emptyList())
+          .setRoomName(channelName);
 
         return repo.save(NotificationChannelDocument.from(channel));
     }

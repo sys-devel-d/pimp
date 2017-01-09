@@ -1,18 +1,12 @@
 package com.pimp.controller;
 
+import com.pimp.domain.Notification;
+import com.pimp.services.NotificationDispatcherService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.pimp.domain.Notification;
-import com.pimp.domain.NotificationChannel;
-import com.pimp.services.NotificationDispatcherService;
 
 @RequestMapping("/notification")
 @RestController
@@ -27,10 +21,7 @@ public class NotificationChannelController  {
 
   @RequestMapping(path = "/user/{user}", method = RequestMethod.POST)
   public void init(@PathVariable String user) {
-    NotificationChannel channel = (NotificationChannel) new NotificationChannel()
-      .setRoomName(user);
-
-    service.create(channel);
+    service.create(user);
   }
 
   @RequestMapping(path = "/user/{user}", method = RequestMethod.GET)

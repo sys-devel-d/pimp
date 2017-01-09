@@ -21,4 +21,5 @@ public class NotificationDispatcherServiceTest {
     public void setUp() throws Exception {
         service = new NotificationDispatcherService(repo);
     }
+
 }
