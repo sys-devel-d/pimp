@@ -65,21 +65,23 @@ public class CalendarController {
   @RequestMapping(method = POST, path = "/{calendarKey}")
   public Event addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
       Principal principal) {
+    String userName = principal.getName();
     Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
       throw new EntityNotFoundException("A calendar with the key " + calendarKey + " does not exist");
     }
-    if (!calendar.getOwner().equals(principal.getName())) {
+    if (!calendar.getOwner().equals(userName)) {
       throw new ForbiddenException("You are not allowed to add events to this calendar");
     }
-    if (!calendar.getSubscribers().contains(principal.getName())) {
+    if (!calendar.getSubscribers().contains(userName)) {
       throw new ForbiddenException("You can't add an event to a unsubscribed calendar");
     }
     if (event.getCalendarKey() == null) {
       event.setCalendarKey(calendar.getKey());
     }
-    if(!event.getParticipants().contains(principal.getName())) {
-      event.getParticipants().add(principal.getName());
+    if(!event.getParticipants().contains(userName) &&
+       !event.getInvited().contains(userName)) {
+      event.getParticipants().add(userName);
     }
     calendar.getEvents().add(event);
     calendarService.save(calendar);
@@ -215,10 +217,9 @@ public class CalendarController {
       }
       calendarService.replaceEvent(evt);
     }
-    else {
-      throw new EntityNotFoundException("An event with key " + response.getEventKey() +
-        " does not exist");
-    }
+    /* Do not throw an exception when the event does not exist because this is a
+       very likely case. Someone says yes/no to an event, but the event was already deleted.
+     */
   }
 }
 
