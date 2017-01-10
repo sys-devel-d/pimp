@@ -3,6 +3,7 @@ package com.pimp.controller;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -77,10 +78,9 @@ public class CalendarController {
     if (event.getCalendarKey() == null) {
       event.setCalendarKey(calendar.getKey());
     }
-    // TODO: autosubscribe to be discussed
-    event.getParticipants().forEach(participant -> {
-      calendar.getSubscribers().add(participant);
-    });
+    if(!event.getParticipants().contains(principal.getName())) {
+      event.getParticipants().add(principal.getName());
+    }
     calendar.getEvents().add(event);
     calendarService.save(calendar);
     return event;
@@ -101,6 +101,25 @@ public class CalendarController {
     } else {
       calendarService.replaceEvent(event);
     }
+  }
+
+  @RequestMapping(method = GET, path = "{calendarKey}/event/{eventKey}")
+  public Event getEvent(@PathVariable String calendarKey, @PathVariable String eventKey, Principal principal) {
+    Calendar calendar = calendarService.getCalendarByKey(calendarKey);
+    if (calendar == null) {
+      throw new EntityNotFoundException("A calendar with key " + calendarKey +
+        " does not exist");
+    }
+    Event event = calendar.getEventByKey(eventKey);
+    if (event == null) {
+      throw new EntityNotFoundException("An event with key " + eventKey +
+        " does not exist");
+    }
+    if (event.getInvited().contains(principal.getName()) ||
+        event.getCreator().equals(principal.getName())
+       ) { return event; }
+
+    throw new ForbiddenException("You are not allowed to access this event");
   }
 
   @RequestMapping(method = DELETE, path = "/event/{eventKey}")
@@ -175,21 +194,30 @@ public class CalendarController {
     Calendar calendar = calendarService.getCalendarByKey(response.getCalendarKey());
 
     if (calendar == null) {
-      throw new EntityNotFoundException("An event with the key " + response.getEventKey() +
-        "does not exist");
+      throw new EntityNotFoundException("A Calender with key " + response.getCalendarKey() +
+        " does not exist");
     }
-    // TODO: since we do not have the separation between invited, declined and accepted user for a event,
-    // we can't make the transitition invited => declined
-    // for now, we could only delete the user in the participant list in case of a decline
-    if (response.getState().equals(InvitationResponse.DECLINED)) {
-      Event newEvent =
-        calendar.getEvents()
-          .stream()
-          .filter(event -> event.getKey().equals(response.getEventKey()))
-          .findFirst()
-          .get();
-      newEvent.getParticipants().remove(principal.getName());
-      calendarService.replaceEvent(newEvent);
+
+    Optional<Event> maybeEvent =
+      calendar.getEvents()
+        .stream()
+        .filter(event -> event.getKey().equals(response.getEventKey()))
+        .findFirst();
+    if(maybeEvent.isPresent()) {
+      Event evt = maybeEvent.get();
+      String userName = principal.getName();
+      evt.getInvited().remove(userName);
+      if(response.getState().equals(InvitationResponse.DECLINED)) {
+        evt.getDeclined().add(userName);
+      }
+      else if(response.getState().equals(InvitationResponse.ACCEPTED)) {
+        evt.getParticipants().add(userName);
+      }
+      calendarService.replaceEvent(evt);
+    }
+    else {
+      throw new EntityNotFoundException("An event with key " + response.getEventKey() +
+        " does not exist");
     }
   }
 }

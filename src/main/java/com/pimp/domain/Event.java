@@ -35,7 +35,11 @@ public class Event implements IKeyedObject {
   private boolean allDay = false;
   @JsonProperty
   private boolean isPrivate = false;
+  // A userName should only be present in on of these three list at a time
   private List<String> participants = new ArrayList<>();
+  private List<String> invited = new ArrayList<>();
+  // List of userNames who declined invitation to the event
+  private List<String> declined = new ArrayList<>();
 
   public Event() {
   }
@@ -133,5 +137,13 @@ public class Event implements IKeyedObject {
   public Event setCreator(String creator) {
     this.creator = creator;
     return this;
+  }
+
+  public List<String> getInvited() {
+    return invited;
+  }
+
+  public List<String> getDeclined() {
+    return declined;
   }
 }
