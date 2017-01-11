@@ -10,6 +10,7 @@ public class Notification extends Message {
     private String referenceParentKey;
     private String sendingUser;
     private String receivingUser;
+    private String intent;
 
     public NotificationType getType() {
         return type;
