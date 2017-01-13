@@ -45,6 +45,16 @@ public abstract class GroupService<T extends Group> {
       return group;
     }
 
+    public List<T> findAll() {
+      List<T> groups = repository.findAll();
+
+      if (groups == null) {
+        throw new EntityNotFoundException("There are no " + getGroupType());
+      }
+
+      return groups;
+    }
+
     public List<T> findByUserName(String userName) {
         return repository.findByUserName(userName);
     }
@@ -81,4 +91,6 @@ public abstract class GroupService<T extends Group> {
 
         repository.save(group);
     }
+
+    public T save(T group) { return repository.save(group); }
 }

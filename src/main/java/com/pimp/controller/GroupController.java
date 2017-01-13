@@ -33,12 +33,25 @@ public abstract class GroupController<T extends Group> {
     @Deprecated
     @RequestMapping(method = GET, path = "/{name}")
     public T get(@PathVariable String name) {
-        return groupService.find(name);
+      return groupService.find(name);
+    }
+
+    @Deprecated
+    @RequestMapping(method = GET)
+    public List<T> getAll() {
+      return groupService.findAll();
     }
 
     @RequestMapping(method = GET, path = "/id/{key}")
     public T getByKey(@PathVariable String key) {
         return groupService.findByKey(key);
+    }
+
+    @RequestMapping(method = PATCH, path = "/{name}")
+    public T editGroup(@PathVariable String name, @Valid @RequestBody T group) {
+      T newGroup = groupService.find(name);
+      newGroup.setName(group.getName());
+      return groupService.save(group);
     }
 
     @RequestMapping(method = POST)
