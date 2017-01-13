@@ -9,7 +9,9 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomTokenEnhancerService implements TokenEnhancer {
@@ -27,7 +29,10 @@ public class CustomTokenEnhancerService implements TokenEnhancer {
         UserDetails user = (UserDetails) authentication.getPrincipal();
         Map<String, Object> additionalInformation = new HashMap<>();
         additionalInformation.put("user_name", user.getUsername());
-        String roles = user.getAuthorities().stream().map(GrantedAuthority::toString).reduce((o, o2) -> o + ", " + o2).get();
+        List<String> roles = user.getAuthorities()
+          .stream()
+          .map(GrantedAuthority::getAuthority)
+          .collect(Collectors.toList());
         additionalInformation.put("user_roles", roles);
         token.setAdditionalInformation(additionalInformation);
 
