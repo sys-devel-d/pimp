@@ -110,21 +110,6 @@ public class ProjectControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    public void testRemoveUser() throws Exception {
-        when(userService.exists("userFoo")).thenReturn(true);
-        server.perform(delete("/project/foo/userFoo"));
-
-        verify(projectService, only()).remove("foo", "userFoo");
-    }
-
-    @Test
-    public void testRemoveNonExistingUser() throws Exception {
-        when(userService.exists("userFoo")).thenReturn(false);
-        server.perform(delete("/project/foo/userFoo"))
-                .andExpect(status().isNotFound());
-    }
-
   @Test
   public void testFindByKey() throws Exception {
     Project project = new Project()

@@ -30,8 +30,8 @@ public class TeamController extends GroupController<Team> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void delete(@PathVariable String name) {
-        super.delete(name);
+    public void delete(@PathVariable String key) {
+        super.delete(key);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -40,9 +40,4 @@ public class TeamController extends GroupController<Team> {
         super.add(groupName, userName);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @Override
-    public void remove(@PathVariable String groupName, @PathVariable String userName) {
-        super.remove(groupName, userName);
-    }
 }

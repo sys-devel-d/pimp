@@ -86,18 +86,6 @@ public class ProjectServiceIT {
         assertThat(project.getKey()).isEqualTo(foundProject.getKey());
     }
 
-    @Test
-    public void testRemove() throws Exception {
-        Project project = new Project().setName("OverstaffedProject").add("OldUser");
-
-        service.create(project);
-        service.remove(project.getName(), "OldUser");
-
-        Project foundProject = service.find(project.getName());
-
-        assertThat(foundProject.getUserNames()).doesNotContain("OldUser");
-        assertThat(project.getKey()).isEqualTo(foundProject.getKey());
-    }
 
     private void assertAbsent(String name) {
         try {

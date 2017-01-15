@@ -59,10 +59,10 @@ public abstract class GroupService<T extends Group> {
         return repository.findByUserName(userName);
     }
 
-    public void delete(String name) {
-        T group = repository.findByName(name);
+    public void delete(String key) {
+        T group = repository.findByKey(key);
         if (group == null) {
-            throw new EntityNotFoundException(getGroupType() + " " + name + " cannot be deleted, since it does not exist.");
+            throw new EntityNotFoundException(getGroupType() + " " + key+ " cannot be deleted, since it does not exist.");
         }
 
         repository.delete(group);
@@ -76,18 +76,6 @@ public abstract class GroupService<T extends Group> {
         }
 
         group.add(userName);
-
-        repository.save(group);
-    }
-
-    public void remove(String projectName, String userName) {
-        T group = repository.findByName(projectName);
-
-        if (group == null) {
-            throw new EntityNotFoundException(getGroupType() + " " + projectName + " cannot be modified, since it does not exist.");
-        }
-
-        group.remove(userName);
 
         repository.save(group);
     }
