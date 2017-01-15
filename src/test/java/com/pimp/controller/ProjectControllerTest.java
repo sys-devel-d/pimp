@@ -89,13 +89,6 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
-        server.perform(delete("/project/foo")).andExpect(status().isOk());
-
-        verify(projectService, only()).delete("foo");
-    }
-
-    @Test
     public void testAddUser() throws Exception {
         when(userService.exists("userFoo")).thenReturn(true);
         server.perform(patch("/project/foo/userFoo"));
