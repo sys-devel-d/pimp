@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
@@ -123,4 +124,19 @@ public class ProjectControllerTest {
         server.perform(delete("/project/foo/userFoo"))
                 .andExpect(status().isNotFound());
     }
+
+  @Test
+  public void testFindByKey() throws Exception {
+    Project project = new Project()
+      .setName("Foo")
+      .setUserNames(Arrays.asList("PatrickBateman", "PaulAllen"));
+    project.setKey("foo");
+
+    when(projectService.findByKey(anyString())).thenReturn(project);
+
+    ResultActions resultActions = server.perform(get("/project/id/foo"));
+    resultActions
+      .andExpect(status().isOk())
+      .andExpect(content().json("{\"key\":\"foo\",\"name\":\"Foo\",\"userNames\":[\"PatrickBateman\", \"PaulAllen\"]}"));
+  }
 }

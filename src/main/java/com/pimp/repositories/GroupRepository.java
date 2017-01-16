@@ -12,4 +12,6 @@ public interface GroupRepository<T extends Group> extends MongoRepository<T, Str
 
     @Query("{userNames:{$elemMatch:{$eq: ?0}}}")
     public List<T> findByUserName(String userName);
+
+    public T findByKey(String key);
 }
