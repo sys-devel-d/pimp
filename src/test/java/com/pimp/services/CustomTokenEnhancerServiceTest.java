@@ -35,6 +35,6 @@ public class CustomTokenEnhancerServiceTest {
         OAuth2AccessToken enhanced = tokenEnhancer.enhance(token, authentication);
 
         assertThat(enhanced.getAdditionalInformation().containsKey("user_roles"));
-        assertThat((String )enhanced.getAdditionalInformation().get("user_roles")).contains("USER");
+        assertThat(enhanced.getAdditionalInformation().get("user_roles")).asList().contains("USER");
     }
 }

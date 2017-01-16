@@ -64,6 +64,17 @@ public class UserController {
     return withoutCurrentUser(foundUsers, loggedInUser);
   }
 
+  @RequestMapping(method = GET, path = "/search/all/{query}")
+  @PreAuthorize("#oauth2.hasScope('user_actions')")
+  public List<User> searchAllUser(@PathVariable String query) {
+    if (query.length() < 3) {
+      throw new IllegalArgumentException("Search string should have a length >= 3.");
+    }
+    List<User> foundUsers = userService.query(query, Arrays.asList("firstName", "lastName", "_id"));
+
+    return foundUsers;
+  }
+
   @RequestMapping(method = POST, path = "/{userName}/photo")
   @PreAuthorize("#oauth2.hasScope('user_actions')")
   public String addPhotoToUser(@PathVariable String userName, @RequestBody String file) {

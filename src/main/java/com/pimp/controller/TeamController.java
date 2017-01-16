@@ -24,14 +24,14 @@ public class TeamController extends GroupController<Team> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void create(@Valid @RequestBody Team group) {
-        super.create(group);
+    public Team create(@Valid @RequestBody Team group) {
+        return super.create(group);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void delete(@PathVariable String name) {
-        super.delete(name);
+    public void delete(@PathVariable String key) {
+        super.delete(key);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -40,9 +40,4 @@ public class TeamController extends GroupController<Team> {
         super.add(groupName, userName);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @Override
-    public void remove(@PathVariable String groupName, @PathVariable String userName) {
-        super.remove(groupName, userName);
-    }
 }
