@@ -17,12 +17,12 @@ public abstract class GroupService<T extends Group> {
 
     protected abstract String getGroupType();
 
-    public void create(T group) {
+    public T create(T group) {
         if (repository.findByName(group.getName()) != null) {
             throw new EntityAlreadyExistsException(getGroupType() + " with name " + group.getName() + " already exists.");
         }
 
-        repository.save(group);
+        return repository.save(group);
     }
 
     public T findByKey(String key) {

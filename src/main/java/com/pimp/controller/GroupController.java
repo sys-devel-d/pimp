@@ -61,7 +61,7 @@ public abstract class GroupController<T extends Group> {
   }
 
   @RequestMapping(method = POST)
-  public void create(@Valid @RequestBody T group) {
+  public T create(@Valid @RequestBody T group) {
     List<String> nonExistingUsers =
       group.getUserNames().stream().filter(u -> !userService.exists(u)).collect(Collectors.toList());
     if (!nonExistingUsers.isEmpty()) {
@@ -69,7 +69,7 @@ public abstract class GroupController<T extends Group> {
         "The following users do not exist: " + nonExistingUsers.stream().reduce((s1, s2) -> s1 + ", " + s2).get());
     }
 
-    groupService.create(group);
+    return groupService.create(group);
   }
 
   @RequestMapping(method = DELETE, path = "/id/{key}")

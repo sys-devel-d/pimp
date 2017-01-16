@@ -24,8 +24,8 @@ public class ProjectController extends GroupController<Project> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void create(@Valid @RequestBody Project group) {
-        super.create(group);
+    public Project create(@Valid @RequestBody Project group) {
+        return super.create(group);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

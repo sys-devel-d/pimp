@@ -24,8 +24,8 @@ public class TeamController extends GroupController<Team> {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public void create(@Valid @RequestBody Team group) {
-        super.create(group);
+    public Team create(@Valid @RequestBody Team group) {
+        return super.create(group);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
