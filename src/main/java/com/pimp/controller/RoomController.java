@@ -1,5 +1,6 @@
 package com.pimp.controller;
 
+import com.pimp.commons.exceptions.ForbiddenException;
 import com.pimp.domain.ChatRoom;
 import com.pimp.domain.User;
 import com.pimp.services.ChatRoomService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -79,6 +81,19 @@ public class RoomController {
         List<ChatRoom> rooms = chatRoomService.findUsersRooms(user);
         if(rooms == null) return new ArrayList<>();
         return rooms;
+    }
+
+    @RequestMapping(method = GET, path = "/{roomName}")
+    public ChatRoom getRoom(@PathVariable String roomName, Principal principal) {
+        ChatRoom chatRoom = chatRoomService.findByRoomName(roomName);
+        boolean userIsParticipant = chatRoom.getParticipants()
+            .stream()
+            .anyMatch(u -> u.getUserName().equals(principal.getName()));
+        if(userIsParticipant) {
+            return chatRoom;
+        }
+        throw new ForbiddenException("You are not allowed to access room " + roomName);
+
     }
 
     @RequestMapping(method = PATCH, path = "/exit/{roomName}")

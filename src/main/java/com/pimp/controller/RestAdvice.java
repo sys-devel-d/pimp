@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @ControllerAdvice
 public class RestAdvice {
@@ -30,7 +31,7 @@ public class RestAdvice {
     return JSONError.badRequest(e.getMessage());
   }
 
-  @ExceptionHandler({BadRequestException.class})
+  @ExceptionHandler({BadRequestException.class, NotImplementedException.class})
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ResponseBody
   public JSONError badRequest(BadRequestException e) {

@@ -1,26 +1,28 @@
 package com.pimp.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityNotFoundException;
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.commons.exceptions.ForbiddenException;
 import com.pimp.domain.Calendar;
 import com.pimp.domain.Event;
+import com.pimp.domain.InvitationResponse;
 import com.pimp.services.CalendarService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 
 import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
@@ -63,18 +65,23 @@ public class CalendarController {
   @RequestMapping(method = POST, path = "/{calendarKey}")
   public Event addEvent(@Valid @RequestBody Event event, @PathVariable String calendarKey,
       Principal principal) {
+    String userName = principal.getName();
     Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
       throw new EntityNotFoundException("A calendar with the key " + calendarKey + " does not exist");
     }
-    if (!calendar.getOwner().equals(principal.getName())) {
+    if (!calendar.getOwner().equals(userName)) {
       throw new ForbiddenException("You are not allowed to add events to this calendar");
     }
-    if (!calendar.getSubscribers().contains(principal.getName())) {
+    if (!calendar.getSubscribers().contains(userName)) {
       throw new ForbiddenException("You can't add an event to a unsubscribed calendar");
     }
     if (event.getCalendarKey() == null) {
       event.setCalendarKey(calendar.getKey());
+    }
+    if(!event.getParticipants().contains(userName) &&
+       !event.getInvited().contains(userName)) {
+      event.getParticipants().add(userName);
     }
     calendar.getEvents().add(event);
     calendarService.save(calendar);
@@ -93,13 +100,28 @@ public class CalendarController {
     }
     if (!calendar.getSubscribers().contains(principal.getName())) {
       throw new ForbiddenException("You can't edit an event of a unsubscribed calendar");
+    } else {
+      calendarService.replaceEvent(event);
     }
-    List<Event> events = calendar.getEvents()
-      .stream()
-      .map(aEvent -> aEvent.getKey().equals(event.getKey()) ? event : aEvent)
-      .collect(Collectors.toList());
-    calendar.setEvents(events);
-    calendarService.save(calendar);
+  }
+
+  @RequestMapping(method = GET, path = "{calendarKey}/event/{eventKey}")
+  public Event getEvent(@PathVariable String calendarKey, @PathVariable String eventKey, Principal principal) {
+    Calendar calendar = calendarService.getCalendarByKey(calendarKey);
+    if (calendar == null) {
+      throw new EntityNotFoundException("A calendar with key " + calendarKey +
+        " does not exist");
+    }
+    Event event = calendar.getEventByKey(eventKey);
+    if (event == null) {
+      throw new EntityNotFoundException("An event with key " + eventKey +
+        " does not exist");
+    }
+    if (event.getInvited().contains(principal.getName()) ||
+        event.getCreator().equals(principal.getName())
+       ) { return event; }
+
+    throw new ForbiddenException("You are not allowed to access this event");
   }
 
   @RequestMapping(method = DELETE, path = "/event/{eventKey}")
@@ -156,15 +178,49 @@ public class CalendarController {
     Calendar calendar = calendarService.getCalendarByKey(key);
     List<String> subscribers = calendar.getSubscribers();
     if (!subscribers.contains(principal.getName())) {
-      throw new EntityAlreadyExistsException(
-        principal.getName() + " has no subscribed calendar with name " + calendar.getTitle());
+      throw new EntityAlreadyExistsException(principal.getName() + " has no subscribed calendar with name " + calendar.getTitle());
     }
-    if(calendar.getOwner().equals(principal.getName())) {
+    if (calendar.getOwner().equals(principal.getName())) {
       throw new ForbiddenException("You cannot unsubscribe from your own calendars");
     }
     subscribers.remove(principal.getName());
     calendar.setSubscribers(subscribers);
     calendarService.save(calendar);
   }
+
+
+  @RequestMapping(method = POST, path = "/invitation")
+  public void acceptOrDeclineInvitation(@Valid @RequestBody InvitationResponse response,
+    Principal principal) {
+
+    Calendar calendar = calendarService.getCalendarByKey(response.getCalendarKey());
+
+    if (calendar == null) {
+      throw new EntityNotFoundException("A Calender with key " + response.getCalendarKey() +
+        " does not exist");
+    }
+
+    Optional<Event> maybeEvent =
+      calendar.getEvents()
+        .stream()
+        .filter(event -> event.getKey().equals(response.getEventKey()))
+        .findFirst();
+    if(maybeEvent.isPresent()) {
+      Event evt = maybeEvent.get();
+      String userName = principal.getName();
+      evt.getInvited().remove(userName);
+      if(response.getState().equals(InvitationResponse.DECLINED)) {
+        evt.getDeclined().add(userName);
+      }
+      else if(response.getState().equals(InvitationResponse.ACCEPTED)) {
+        evt.getParticipants().add(userName);
+      }
+      calendarService.replaceEvent(evt);
+    }
+    /* Do not throw an exception when the event does not exist because this is a
+       very likely case. Someone says yes/no to an event, but the event was already deleted.
+     */
+  }
 }
+
 

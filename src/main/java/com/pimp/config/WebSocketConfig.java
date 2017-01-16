@@ -17,12 +17,12 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry brokerRegistry) {
-    brokerRegistry.enableSimpleBroker("/rooms");
+    brokerRegistry.enableSimpleBroker("/rooms", "/notifications");
     brokerRegistry.setApplicationDestinationPrefixes("/app");
   }
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-    stompEndpointRegistry.addEndpoint("/chat").setAllowedOrigins("*").withSockJS();
+    stompEndpointRegistry.addEndpoint("/chat", "/notifications").setAllowedOrigins("*").withSockJS();
   }
 }
