@@ -89,13 +89,6 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testDelete() throws Exception {
-        server.perform(delete("/project/foo")).andExpect(status().isOk());
-
-        verify(projectService, only()).delete("foo");
-    }
-
-    @Test
     public void testAddUser() throws Exception {
         when(userService.exists("userFoo")).thenReturn(true);
         server.perform(patch("/project/foo/userFoo"));
@@ -107,21 +100,6 @@ public class ProjectControllerTest {
     public void testAddNonExistingUser() throws Exception {
         when(userService.exists("userFoo")).thenReturn(false);
         server.perform(patch("/project/foo/userFoo"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    public void testRemoveUser() throws Exception {
-        when(userService.exists("userFoo")).thenReturn(true);
-        server.perform(delete("/project/foo/userFoo"));
-
-        verify(projectService, only()).remove("foo", "userFoo");
-    }
-
-    @Test
-    public void testRemoveNonExistingUser() throws Exception {
-        when(userService.exists("userFoo")).thenReturn(false);
-        server.perform(delete("/project/foo/userFoo"))
                 .andExpect(status().isNotFound());
     }
 
