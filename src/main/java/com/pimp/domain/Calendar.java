@@ -27,6 +27,8 @@ public class Calendar implements IKeyedObject {
   private boolean isPrivate = false;
   private List<String> subscribers = new ArrayList<>();
   private List<Event> events = new ArrayList<>();
+  @Size(min=3, max=9) // 000 or #ff00ffaa
+  private String hexColor;
 
   public Calendar() {
   }
