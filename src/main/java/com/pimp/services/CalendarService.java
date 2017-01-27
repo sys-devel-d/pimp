@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
 import com.pimp.commons.exceptions.EntityValidationException;
 import com.pimp.domain.Calendar;
 import com.pimp.domain.Event;
@@ -36,6 +37,21 @@ public class CalendarService {
       throw new EntityValidationException("The title of the calendar should not be empty");
     }
     return calendarRepository.save(calendar);
+  }
+
+  public Calendar createPrivateCalendar(String username) {
+    if (hasPrivateCalendar(username)) {
+      throw new EntityAlreadyExistsException("A private calendar already exists for user " + username);
+    }
+    Calendar calendar = new Calendar();
+    calendar.setOwner(username);
+    calendar.setPrivate(true);
+    calendar.getSubscribers().add(username);
+    return calendarRepository.save(calendar);
+  }
+
+  private boolean hasPrivateCalendar(String username) {
+    return calendarRepository.findPrivateCalendarByOwner(username).size() > 0;
   }
 
   public List<Calendar> getCalendarsByUser(String username) {

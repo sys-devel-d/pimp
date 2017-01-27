@@ -1,11 +1,13 @@
 package com.pimp.services;
 
-import com.pimp.commons.exceptions.EntityAlreadyExistsException;
-import com.pimp.commons.exceptions.EntityNotFoundException;
-import com.pimp.commons.mongo.MongoFileStorage;
-import com.pimp.domain.User;
-import com.pimp.domain.UserDocument;
-import com.pimp.repositories.UserRepository;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.bson.types.ObjectId;
@@ -16,13 +18,12 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.pimp.commons.exceptions.EntityAlreadyExistsException;
+import com.pimp.commons.exceptions.EntityNotFoundException;
+import com.pimp.commons.mongo.MongoFileStorage;
+import com.pimp.domain.User;
+import com.pimp.domain.UserDocument;
+import com.pimp.repositories.UserRepository;
 
 @Service
 public class UserService {
@@ -32,6 +33,10 @@ public class UserService {
   private MongoOperations mongoOperations;
   @Autowired
   private MongoFileStorage fileStorage;
+  @Autowired
+  private NotificationDispatcherService notificationService;
+  @Autowired
+  private CalendarService calendarService;
 
   private BCryptPasswordEncoder encoder;
 
@@ -53,11 +58,12 @@ public class UserService {
 
     UserDocument userDocument = UserDocument.from(user)
             .setPassword(encoder.encode(user.getPassword()));
-
     if (userDocument.getRoles().isEmpty()) {
       userDocument.setRoles(Arrays.asList("ROLE_USER"));
     }
     userRepository.save(userDocument);
+    notificationService.create(userName);
+    calendarService.createPrivateCalendar(userName);
 
     return userDocument;
   }
