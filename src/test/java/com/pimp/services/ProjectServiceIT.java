@@ -68,7 +68,8 @@ public class ProjectServiceIT {
         assertAbsent("Project");
 
         service.create(project);
-        service.delete("Project");
+        Project foundProject = service.find("Project");
+        service.delete(foundProject.getKey());
 
         assertAbsent("Project");
     }
@@ -85,7 +86,6 @@ public class ProjectServiceIT {
         assertThat(foundProject.getUserNames()).contains("NewUser");
         assertThat(project.getKey()).isEqualTo(foundProject.getKey());
     }
-
 
     private void assertAbsent(String name) {
         try {

@@ -28,16 +28,24 @@ import java.util.stream.Collectors;
 public class UserService {
 
   private UserRepository userRepository;
-  @Autowired
   private MongoOperations mongoOperations;
-  @Autowired
   private MongoFileStorage fileStorage;
-
+  private NotificationDispatcherService notificationService;
+  private CalendarService calendarService;
   private BCryptPasswordEncoder encoder;
 
   @Autowired
-  public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+  public UserService(UserRepository userRepository,
+                     MongoOperations mongoOperations,
+                     MongoFileStorage fileStorage,
+                     NotificationDispatcherService notificationService,
+                     CalendarService calendarService,
+                     BCryptPasswordEncoder encoder) {
     this.userRepository = userRepository;
+    this.mongoOperations = mongoOperations;
+    this.fileStorage = fileStorage;
+    this.notificationService = notificationService;
+    this.calendarService = calendarService;
     this.encoder = encoder;
   }
 
@@ -53,11 +61,12 @@ public class UserService {
 
     UserDocument userDocument = UserDocument.from(user)
             .setPassword(encoder.encode(user.getPassword()));
-
     if (userDocument.getRoles().isEmpty()) {
       userDocument.setRoles(Arrays.asList("ROLE_USER"));
     }
     userRepository.save(userDocument);
+    notificationService.create(userName);
+    calendarService.createPrivateCalendar(userName);
 
     return userDocument;
   }
