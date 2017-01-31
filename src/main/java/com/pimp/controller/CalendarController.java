@@ -124,11 +124,11 @@ public class CalendarController {
     throw new ForbiddenException("You are not allowed to access this event");
   }
 
-  @RequestMapping(method = DELETE, path = "/event/{eventKey}")
-  public void deleteEvent(@Valid @RequestBody Event event, Principal principal) {
-    Calendar calendar = calendarService.getCalendarByKey(event.getCalendarKey());
+  @RequestMapping(method = DELETE, path = "/{calendarKey}/{eventKey}")
+  public void deleteEvent(@PathVariable String calendarKey, @PathVariable String eventKey, Principal principal) {
+    Calendar calendar = calendarService.getCalendarByKey(calendarKey);
     if (calendar == null) {
-      throw new EntityNotFoundException("An event with the key " + event.getKey() +
+      throw new EntityNotFoundException("An event with the key " + eventKey +
           " does not exist");
     }
     if (!calendar.getOwner().equals(principal.getName())) {
@@ -139,7 +139,7 @@ public class CalendarController {
     }
     List<Event> events = calendar.getEvents()
       .stream()
-      .filter(aEvent -> !aEvent.getKey().equals(event.getKey()))
+      .filter(aEvent -> !aEvent.getKey().equals(eventKey))
       .collect(Collectors.toList());
     calendar.setEvents(events);
     calendarService.save(calendar);

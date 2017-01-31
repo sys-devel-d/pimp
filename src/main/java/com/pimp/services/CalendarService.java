@@ -44,6 +44,7 @@ public class CalendarService {
       throw new EntityAlreadyExistsException("A private calendar already exists for user " + username);
     }
     Calendar calendar = new Calendar();
+    calendar.setTitle("PRIVATE TERMINE");
     calendar.setOwner(username);
     calendar.setPrivate(true);
     calendar.getSubscribers().add(username);
