@@ -48,10 +48,8 @@ public class RoomController {
             if(chatRoom != null) {
                 return ResponseEntity.ok(chatRoom);
             }
-            // chat room has already been initialized
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-        // Bad parameters
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
@@ -107,12 +105,10 @@ public class RoomController {
 
     @RequestMapping(method = PATCH, path = "/edit/")
     public ResponseEntity<ChatRoom> editChatRoom(@RequestBody ChatRoom chatRoom) {
-        // Right now only group chats can be edited. You can only exit private chats.
         if(chatRoom == null || chatRoom.getRoomType().equals(ChatRoom.ROOM_TYPE_PRIVATE)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         ChatRoom roomToEdit = chatRoomService.findByRoomName(chatRoom.getRoomName());
-        // Only displayNames and participants can be edited.
         roomToEdit
                 .setDisplayNames(chatRoom.getDisplayNames())
                 .setParticipants(chatRoom.getParticipants());
