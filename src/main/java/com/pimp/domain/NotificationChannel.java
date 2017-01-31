@@ -6,8 +6,6 @@ public class NotificationChannel extends ChatRoom {
       super();
     }
 
-    private String owner;
-
     public static NotificationChannel from(NotificationChannelDocument document) {
         return (NotificationChannel) new NotificationChannel()
                 .setRoomName(document.getRoomName())
